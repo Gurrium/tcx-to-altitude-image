@@ -62,9 +62,7 @@ function parseData(content) {
   const doc = parser.parseFromString(content, 'text/xml')
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
   return trackpointTags
-    .map((tag, index) => {
-      // if (index % 10 != 0) { return null }
-
+    .map(tag => {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
       if (distanceTag == null || altitudeTag == null) {
@@ -146,8 +144,6 @@ function createChart() {
         display: false,
       },
     },
-    // events: ['mousedown', 'mousemove', 'mouseup'],
-    // onHover: e => console.log('hover:', e),
     animation: {
       onComplete: _ => {
         setDownloadableImage()

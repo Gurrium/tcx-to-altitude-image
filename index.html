@@ -5,32 +5,35 @@
 
 <p>
 <form class="pure-form pure-form-stacked">
-  <fieldset>
-    <div class="pure-g">
-      <div class="pure-u-1 pure-u-md-1-5">
+  <div class="pure-g">
+    <fieldset class="pure-u-1">
+      <div>
         <label for="route-file">ルートファイル</label>
         <input id="route-file" class="pure-u-23-24" type="file" accept=".tcx" />
       </div>
+    </fieldset>
+    <fieldset class="pure-u-1">
       <div class="pure-u-1 pure-u-md-1-5">
         <label for="minDistance">始点</label>
-        <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1"/>
+        <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
       </div>
       <div class="pure-u-1 pure-u-md-1-5">
         <label for="maxDistance">終点</label>
         <input id="maxDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
       </div>
       <div class="pure-u-1 pure-u-md-1-5">
-        <label for="maxDistance">y軸の最大値</label>
+        <label for="maxDistance">標高の最大値</label>
         <input id="maxAltitude" class="pure-u-23-24" type="number" placeholder="[m]" step="0.1" />
       </div>
-  </fieldset>
+    </fieldset>
+  </div>
 </form>
 </p>
 <p>
   <canvas id="chart"></canvas>
 </p>
 <p>
-  <a id="download-button" class="pure-button pure-button-primary pure-button-disabled">
+  <a id="download-button" class="pure-button pure-button-primary pure-button-disabled" target="_blank">
     画像をダウンロードする
   </a>
 </p>
