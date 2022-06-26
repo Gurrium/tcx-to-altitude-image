@@ -1,42 +1,77 @@
-<link href="style.css" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css"
-  integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
-<link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/grids-responsive-min.css">
+<!DOCTYPE html>
 
-<p>
-<form class="pure-form pure-form-stacked">
-  <div class="pure-g">
-    <fieldset class="pure-u-1">
-      <div>
-        <label for="route-file">ルートファイル</label>
-        <input id="route-file" class="pure-u-23-24" type="file" accept=".tcx" />
-      </div>
-    </fieldset>
-    <fieldset class="pure-u-1">
-      <div class="pure-u-1 pure-u-md-1-5">
-        <label for="minDistance">始点</label>
-        <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
-      </div>
-      <div class="pure-u-1 pure-u-md-1-5">
-        <label for="maxDistance">終点</label>
-        <input id="maxDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
-      </div>
-      <div class="pure-u-1 pure-u-md-1-5">
-        <label for="maxDistance">標高の最大値</label>
-        <input id="maxAltitude" class="pure-u-23-24" type="number" placeholder="[m]" step="0.1" />
-      </div>
-    </fieldset>
-  </div>
-</form>
-</p>
-<p>
-  <canvas id="chart"></canvas>
-</p>
-<p>
-  <a id="download-button" class="pure-button pure-button-primary pure-button-disabled" target="_blank">
-    画像をダウンロードする
-  </a>
-</p>
+<head>
+  <link href="style.css" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
+  <!-- Pure.css -->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css"
+    integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/grids-responsive-min.css">
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+  <link rel="manifest" href="./site.webmanifest">
+  <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Title -->
+  <title>TcxToElevation</title>
+
+  <meta charset="UTF-8">
+  <meta name="description" content="tcxファイルから標高図を表示して画像としてダウンロードできるツールです。">
+  <meta name="robots" content="index, follow" </head>
+
+<body>
+  <main>
+    <form class="pure-form pure-form-stacked">
+      <div class="pure-g">
+        <fieldset class="pure-u-1">
+          <div>
+            <label for="route-file">ルートファイル</label>
+            <input id="route-file" class="pure-u-23-24" type="file" accept=".tcx" />
+          </div>
+        </fieldset>
+        <fieldset class="pure-u-1">
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label for="minDistance">始点</label>
+            <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label for="maxDistance">終点</label>
+            <input id="maxDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label for="maxDistance">標高の最大値</label>
+            <input id="maxAltitude" class="pure-u-23-24" type="number" placeholder="[m]" step="0.1" />
+          </div>
+        </fieldset>
+      </div>
+    </form>
+
+    <p>
+      <canvas id="chart"></canvas>
+    </p>
+
+    <p>
+      <a id="download-button" class="pure-button pure-button-primary pure-button-disabled" target="_blank">
+        画像をダウンロードする
+      </a>
+    </p>
+  </main>
+
+  <footer>
+    <address>
+      Twitter: <a href="https://twitter.com/tonineku">@tonineku</a>
+      wishlist: <a href="https://www.amazon.jp/hz/wishlist/ls/WUEQ18VE6LAE?ref_=wl_share">🍠</a>
+    </address>
+    <p>
+      Powered by <a href="https://purecss.io/">Pure.css</a> and <a href="https://www.netlify.com/">Netlify</a>
+    </p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
