@@ -1,8 +1,39 @@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<input type="file" accept=".tcx" id="route-file">
-<canvas id="chart"></canvas>
-<a id="download-button">
-  <button onClick="downloadImage()">
+<link href="style.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css"
+  integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/grids-responsive-min.css">
+
+<p>
+<form class="pure-form pure-form-stacked">
+  <fieldset>
+    <div class="pure-g">
+      <div class="pure-u-1 pure-u-md-1-5">
+        <label for="route-file">ルートファイル</label>
+        <input id="route-file" class="pure-u-23-24" type="file" accept=".tcx" />
+      </div>
+      <div class="pure-u-1 pure-u-md-1-5">
+        <label for="minDistance">始点</label>
+        <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1"/>
+      </div>
+      <div class="pure-u-1 pure-u-md-1-5">
+        <label for="maxDistance">終点</label>
+        <input id="maxDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
+      </div>
+      <div class="pure-u-1 pure-u-md-1-5">
+        <label for="maxDistance">y軸の最大値</label>
+        <input id="maxAltitude" class="pure-u-23-24" type="number" placeholder="[m]" step="0.1" />
+      </div>
+  </fieldset>
+</form>
+</p>
+<p>
+  <canvas id="chart"></canvas>
+</p>
+<p>
+  <a id="download-button" class="pure-button pure-button-primary pure-button-disabled">
     画像をダウンロードする
-  </button>
-</a>
+  </a>
+</p>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
