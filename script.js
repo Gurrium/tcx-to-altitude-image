@@ -173,7 +173,7 @@ function updateDownloadButton() {
     downloadButton.classList.add('pure-button-disabled')
   } else {
     downloadButton.classList.remove('pure-button-disabled')
-  }kkk
+  }
 }
 
 function download() {
