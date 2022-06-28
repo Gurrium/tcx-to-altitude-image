@@ -1,6 +1,7 @@
 var data = null
 const parser = new DOMParser()
 const chart = createChart()
+const downloadButton = document.getElementById('download-button')
 
 document.getElementById('route-file').addEventListener('change', event => {
   const fileList = event.target.files;
@@ -57,6 +58,8 @@ function debounce(func, delay) {
 
   timerID = setTimeout(func, delay)
 }
+
+downloadButton.addEventListener('click', _ => { download() })
 
 function parseData(content) {
   const doc = parser.parseFromString(content, 'text/xml')
@@ -146,7 +149,7 @@ function createChart() {
     },
     animation: {
       onComplete: _ => {
-        setDownloadableImage()
+        updateDownloadButton()
       }
     }
   }
@@ -165,15 +168,15 @@ function updateChart(updatedData) {
   chart.update()
 }
 
-function setDownloadableImage() {
-  const downloadButton = document.getElementById('download-button')
-
+function updateDownloadButton() {
   if (chart.data.datasets[0].data.length <= 1) {
     downloadButton.classList.add('pure-button-disabled')
-    return
-  }
+  } else {
+    downloadButton.classList.remove('pure-button-disabled')
+  }kkk
+}
 
-  downloadButton.classList.remove('pure-button-disabled')
+function download() {
   downloadButton.href = chart.toBase64Image()
   downloadButton.download = `altitudes-${(new Date()).toISOString().split("T")[0]}.png`
 }
