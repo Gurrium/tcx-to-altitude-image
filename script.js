@@ -67,7 +67,7 @@ exportImageWidthInput.addEventListener('input', event => {
   updateDownloadButton()
 
   if (event.target.value == '') {
-    exportImageHeightInput.removeAttribute('requiured')
+    exportImageHeightInput.removeAttribute('required')
   } else {
     exportImageHeightInput.setAttribute('required', '')
   }
@@ -76,7 +76,7 @@ exportImageHeightInput.addEventListener('input', event => {
   updateDownloadButton()
 
   if (event.target.value == '') {
-    exportImageWidthInput.removeAttribute('requiured')
+    exportImageWidthInput.removeAttribute('required')
   } else {
     exportImageWidthInput.setAttribute('required', '')
   }
