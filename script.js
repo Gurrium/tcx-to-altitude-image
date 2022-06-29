@@ -63,45 +63,8 @@ function debounce(func, delay) {
 
 downloadButton.addEventListener('click', _ => { setDownloadData() })
 
-exportImageWidthInput.addEventListener('input', event => {
-  if (event.target.value == '') {
-    exportImageHeightInput.removeAttribute('required')
-
-    if (exportImageHeightInput.value == '') {
-      enableDownloadButton()
-    } else {
-      disableDownloadButton()
-    }
-  } else {
-    exportImageHeightInput.setAttribute('required', '')
-
-    if (exportImageHeightInput.value == '') {
-      disableDownloadButton()
-    } else {
-      enableDownloadButton()
-    }
-  }
-})
-
-exportImageHeightInput.addEventListener('input', event => {
-  if (event.target.value == '') {
-    exportImageWidthInput.removeAttribute('required')
-
-    if (exportImageWidthInput.value == '') {
-      enableDownloadButton()
-    } else {
-      disableDownloadButton()
-    }
-  } else {
-    exportImageWidthInput.setAttribute('required', '')
-
-    if (exportImageWidthInput.value == '') {
-      disableDownloadButton()
-    } else {
-      enableDownloadButton()
-    }
-  }
-})
+exportImageWidthInput.addEventListener('input', _ => { updateDownloadButton() })
+exportImageHeightInput.addEventListener('input', _ => { updateDownloadButton() })
 
 function parseData(content) {
   const doc = parser.parseFromString(content, 'text/xml')
@@ -212,20 +175,24 @@ function updateChart(updatedData) {
 }
 
 function updateDownloadButton() {
-  if (chart.data.datasets[0].data.length <= 1) {
-    disableDownloadButton()
-  } else {
+  const width = parseInt(exportImageWidthInput.value)
+  const height = parseInt(exportImageHeightInput.value)
+  
+  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
+  const isValidDataShown = chart.data.datasets[0].data.length > 1
+
+  if (isValidDataShown && isValidSizeInput) {
     enableDownloadButton()
+  } else {
+    disableDownloadButton()
   }
 }
 
 function enableDownloadButton() {
-  console.log('enable')
   downloadButton.classList.remove('pure-button-disabled')
 }
 
 function disableDownloadButton() {
-  console.log('disable')
   downloadButton.classList.add('pure-button-disabled')
 }
 
@@ -234,8 +201,6 @@ function setDownloadData() {
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
     chart.resize(exportImageWidth, exportImageHeight)
-    console.log(exportImageWidth, exportImageHeight)
-    console.log('resize to', `${exportImageWidth} x ${exportImageHeight}`)
   }
 
   downloadButton.href = chart.toBase64Image()
