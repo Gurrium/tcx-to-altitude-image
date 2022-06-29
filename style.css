@@ -3,6 +3,14 @@ main {
     margin: 0 auto 0;
 }
 
+body {
+    color: #444
+}
+
+body a {
+    color: #888
+}
+
 footer {
     text-align: center;
     font-size: 0.8rem;
@@ -14,6 +22,7 @@ footer address {
 }
 
 footer a {
+    color: #888;
     text-decoration: none;
 }
 
