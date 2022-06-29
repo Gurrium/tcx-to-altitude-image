@@ -63,8 +63,24 @@ function debounce(func, delay) {
 
 downloadButton.addEventListener('click', _ => { setDownloadData() })
 
-exportImageWidthInput.addEventListener('input', _ => { updateDownloadButton() })
-exportImageHeightInput.addEventListener('input', _ => { updateDownloadButton() })
+exportImageWidthInput.addEventListener('input', event => {
+  updateDownloadButton()
+
+  if (event.target.value == '') {
+    exportImageHeightInput.removeAttribute('requiured')
+  } else {
+    exportImageHeightInput.setAttribute('required', '')
+  }
+})
+exportImageHeightInput.addEventListener('input', event => {
+  updateDownloadButton()
+
+  if (event.target.value == '') {
+    exportImageWidthInput.removeAttribute('requiured')
+  } else {
+    exportImageWidthInput.setAttribute('required', '')
+  }
+})
 
 function parseData(content) {
   const doc = parser.parseFromString(content, 'text/xml')
@@ -177,7 +193,7 @@ function updateChart(updatedData) {
 function updateDownloadButton() {
   const width = parseInt(exportImageWidthInput.value)
   const height = parseInt(exportImageHeightInput.value)
-  
+
   const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
   const isValidDataShown = chart.data.datasets[0].data.length > 1
 
