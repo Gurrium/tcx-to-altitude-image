@@ -2,6 +2,8 @@ var data = null
 const parser = new DOMParser()
 const chart = createChart()
 const downloadButton = document.getElementById('download-button')
+const exportImageWidthInput = document.getElementById('exportImageWidth')
+const exportImageHeightInput = document.getElementById('exportImageHeight')
 
 document.getElementById('route-file').addEventListener('change', event => {
   const fileList = event.target.files;
@@ -59,7 +61,47 @@ function debounce(func, delay) {
   timerID = setTimeout(func, delay)
 }
 
-downloadButton.addEventListener('click', _ => { download() })
+downloadButton.addEventListener('click', _ => { setDownloadData() })
+
+exportImageWidthInput.addEventListener('input', event => {
+  if (event.target.value == '') {
+    exportImageHeightInput.removeAttribute('required')
+
+    if (exportImageHeightInput.value == '') {
+      enableDownloadButton()
+    } else {
+      disableDownloadButton()
+    }
+  } else {
+    exportImageHeightInput.setAttribute('required', '')
+
+    if (exportImageHeightInput.value == '') {
+      disableDownloadButton()
+    } else {
+      enableDownloadButton()
+    }
+  }
+})
+
+exportImageHeightInput.addEventListener('input', event => {
+  if (event.target.value == '') {
+    exportImageWidthInput.removeAttribute('required')
+
+    if (exportImageWidthInput.value == '') {
+      enableDownloadButton()
+    } else {
+      disableDownloadButton()
+    }
+  } else {
+    exportImageWidthInput.setAttribute('required', '')
+
+    if (exportImageWidthInput.value == '') {
+      disableDownloadButton()
+    } else {
+      enableDownloadButton()
+    }
+  }
+})
 
 function parseData(content) {
   const doc = parser.parseFromString(content, 'text/xml')
@@ -151,7 +193,8 @@ function createChart() {
       onComplete: _ => {
         updateDownloadButton()
       }
-    }
+    },
+    maintainAspectRatio: false,
   }
 
   return new Chart(ctx, {
@@ -170,15 +213,34 @@ function updateChart(updatedData) {
 
 function updateDownloadButton() {
   if (chart.data.datasets[0].data.length <= 1) {
-    downloadButton.classList.add('pure-button-disabled')
+    disableDownloadButton()
   } else {
-    downloadButton.classList.remove('pure-button-disabled')
+    enableDownloadButton()
   }
 }
 
-function download() {
+function enableDownloadButton() {
+  console.log('enable')
+  downloadButton.classList.remove('pure-button-disabled')
+}
+
+function disableDownloadButton() {
+  console.log('disable')
+  downloadButton.classList.add('pure-button-disabled')
+}
+
+function setDownloadData() {
+  const exportImageWidth = parseInt(exportImageWidthInput.value)
+  const exportImageHeight = parseInt(exportImageHeightInput.value)
+  if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
+    chart.resize(exportImageWidth, exportImageHeight)
+    console.log(exportImageWidth, exportImageHeight)
+    console.log('resize to', `${exportImageWidth} x ${exportImageHeight}`)
+  }
+
   downloadButton.href = chart.toBase64Image()
   downloadButton.download = `altitudes-${(new Date()).toISOString().split("T")[0]}.png`
+  chart.resize()
 }
 
 function updateMaximumMinDistance(maxDistance) {
