@@ -220,7 +220,7 @@ function setDownloadData() {
   }
 
   downloadButton.href = chart.toBase64Image()
-  downloadButton.download = `altitudes-${(new Date()).toISOString().split("T")[0]}.png`
+  downloadButton.download = `elevation-${(new Date()).toISOString().split("T")[0]}.png`
   chart.resize()
 }
 
