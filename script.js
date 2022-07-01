@@ -11,6 +11,8 @@ document.getElementById('route-file').addEventListener('change', event => {
     data = parseData(content)
     updateChart(data)
   })
+
+  sendLoadFileEvent()
 })
 
 document.getElementById('maxDistance').addEventListener('input', event => {
@@ -24,6 +26,8 @@ document.getElementById('maxDistance').addEventListener('input', event => {
     }
 
     updateChart(croppedData(minDistance, maxDistance))
+
+    sendChangeChartSettingsEvent()
   }, 500)
 })
 
@@ -38,6 +42,8 @@ document.getElementById('minDistance').addEventListener('input', event => {
     }
 
     updateChart(croppedData(minDistance, maxDistance))
+
+    sendChangeChartSettingsEvent()
   }, 500)
 })
 
@@ -51,6 +57,8 @@ document.getElementById('maxAltitude').addEventListener('input', event => {
     }
 
     chart.update()
+
+    sendChangeChartSettingsEvent()
   }, 500)
 })
 
@@ -61,7 +69,11 @@ function debounce(func, delay) {
   timerID = setTimeout(func, delay)
 }
 
-downloadButton.addEventListener('click', _ => { setDownloadData() })
+downloadButton.addEventListener('click', _ => {
+  setDownloadData()
+
+  sendDownloadImageEvent()
+})
 
 exportImageWidthInput.addEventListener('input', event => {
   updateDownloadButton()
@@ -232,4 +244,40 @@ function updateMaximumMinDistance(maxDistance) {
 function updateMinimumMaxDistance(minDistance) {
   const maxDistanceInput = document.getElementById('maxDistance')
   maxDistanceInput.min = minDistance
+}
+
+function sendLoadFileEvent() {
+  dataLayer.push(
+    {
+      'event': 'load_file',
+    }
+  )
+}
+
+function sendChangeChartSettingsEvent() {
+  dataLayer.push(
+    {
+      'event': 'change_chart_settings',
+      'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
+      'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
+      'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+    }
+  )
+}
+
+function sendDownloadImageEvent() {
+  dataLayer.push(
+    {
+      'event': 'download_image',
+      'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
+      'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
+      'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+      'width': exportImageWidthInput.value,
+      'height': exportImageHeightInput.value,
+    }
+  )
+}
+
+function nullOrNonBlankString(string) {
+  return string == '' ? null : string
 }
