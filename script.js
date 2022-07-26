@@ -74,6 +74,16 @@ document.getElementById('shouldFillLabel').addEventListener('input', event => {
   chart.update()
 })
 
+// ref: https://dev.to/tylerjdev/when-role-button-is-not-enough-dac
+downloadButton.addEventListener('keydown', e => {
+  const key = e.key
+
+  if ((key === 'Enter' || key === 13) || (['Spacebar', ' '].indexOf(key) >= 0 || key === 32)) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
+
 downloadButton.addEventListener('click', _ => {
   setDownloadData()
 
