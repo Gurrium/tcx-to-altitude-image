@@ -7,14 +7,10 @@ body {
     color: #444
 }
 
-footer a {
-    color: #888
-}
-
 footer {
     text-align: center;
     font-size: 0.8rem;
-    color: #aaa
+    color: #767676
 }
 
 footer address {
@@ -22,7 +18,7 @@ footer address {
 }
 
 footer a {
-    color: #888;
+    color: #666666;
     text-decoration: none;
 }
 
