@@ -2,6 +2,7 @@ var data = null
 const parser = new DOMParser()
 const chart = createChart()
 const downloadButton = document.getElementById('download-button')
+const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
 
@@ -74,20 +75,12 @@ document.getElementById('shouldFillLabel').addEventListener('input', event => {
   chart.update()
 })
 
-// ref: https://dev.to/tylerjdev/when-role-button-is-not-enough-dac
-downloadButton.addEventListener('keydown', e => {
-  const key = e.key
-
-  if ((key === 'Enter' || key === 13) || (['Spacebar', ' '].indexOf(key) >= 0 || key === 32)) {
-    e.preventDefault();
-    e.target.click();
-  }
-});
-
-downloadButton.addEventListener('click', _ => {
-  setDownloadData()
+downloadButton.addEventListener('click', e => {
+  download()
 
   sendDownloadImageEvent()
+
+  e.preventDefault()
 })
 
 exportImageWidthInput.addEventListener('input', event => {
@@ -239,15 +232,18 @@ function disableDownloadButton() {
   downloadButton.classList.add('pure-button-disabled')
 }
 
-function setDownloadData() {
+function download() {
   const exportImageWidth = parseInt(exportImageWidthInput.value)
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
-  downloadButton.href = chart.toBase64Image()
-  downloadButton.download = `elevation-${(new Date()).toISOString().split("T")[0]}.png`
+  hiddenDownloadLink.href = chart.toBase64Image()
+  // TODO: ファイル名-elevation.pngにする
+  hiddenDownloadLink.download = `elevation-${(new Date()).toISOString().split("T")[0]}.png`
+  hiddenDownloadLink.click()
+  
   chart.resize()
 }
 

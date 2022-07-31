@@ -7,6 +7,10 @@ body {
     color: #444
 }
 
+#hidden-download-link {
+    display: none;
+}
+
 footer {
     text-align: center;
     font-size: 0.8rem;
