@@ -226,10 +226,12 @@ function updateDownloadButton() {
 
 function enableDownloadButton() {
   downloadButton.classList.remove('pure-button-disabled')
+  downloadButton.disabled = false
 }
 
 function disableDownloadButton() {
   downloadButton.classList.add('pure-button-disabled')
+  downloadButton.disabled = true
 }
 
 function download() {
