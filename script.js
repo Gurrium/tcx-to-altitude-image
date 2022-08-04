@@ -1,12 +1,13 @@
 var data = null
 const parser = new DOMParser()
 const chart = createChart()
+const fileInput = document.getElementById('route-file')
 const downloadButton = document.getElementById('download-button')
 const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
 
-document.getElementById('route-file').addEventListener('change', event => {
+fileInput.addEventListener('change', event => {
   const fileList = event.target.files;
   fileList[0].text().then(content => {
     data = parseData(content)
@@ -241,11 +242,16 @@ function download() {
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
+  var outputFileName = 'elevation.png'
+  const inputFile = fileInput.files[0]
+  if (inputFile != null && inputFile.name.split('.').length > 1) {
+    outputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + outputFileName
+  }
+
   hiddenDownloadLink.href = chart.toBase64Image()
-  // TODO: ファイル名-elevation.pngにする
-  hiddenDownloadLink.download = `elevation-${(new Date()).toISOString().split("T")[0]}.png`
+  hiddenDownloadLink.download = outputFileName
   hiddenDownloadLink.click()
-  
+
   chart.resize()
 }
 
