@@ -54,41 +54,50 @@
 
   <main>
     <form class="pure-form pure-form-stacked">
-      <div class="pure-g">
-        <fieldset class="pure-u-1">
-          <div>
-            <label for="route-file">ルートファイル</label>
-            <input id="route-file" class="pure-u-23-24" type="file" accept=".tcx" />
+      <fieldset>
+        <div class="pure-g">
+          <div class="pure-u-1-5">
+            <label>
+              ルートファイル
+              <input id="route-file" type="file" accept=".tcx" />
+            </label>
           </div>
-        </fieldset>
-        <fieldset class="pure-u-1">
+        </div>
+      </fieldset>
+      <fieldset>
+        <div class="pure-g">
+          <legend class="pure-u-1">
+            表示オプション
+          </legend>
           <div class="pure-u-1 pure-u-md-1-5">
-            <label for="minDistance">始点</label>
-            <input id="minDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
+            <label class="pure-u-23-24">
+              始点
+              <input id="minDistance" type="number" placeholder="[km]" step="0.1" />
+            </label>
           </div>
           <div class="pure-u-1 pure-u-md-1-5">
-            <label for="maxDistance">終点</label>
-            <input id="maxDistance" class="pure-u-23-24" type="number" placeholder="[km]" step="0.1" />
+            <label class="pure-u-23-24">
+              終点
+              <input id="maxDistance" type="number" placeholder="[km]" step="0.1" />
+            </label>
           </div>
           <div class="pure-u-1 pure-u-md-1-5">
-            <label for="maxAltitude">標高の最大値</label>
-            <input id="maxAltitude" class="pure-u-23-24" type="number" placeholder="[m]" step="0.1" />
+            <label class="pure-u-23-24">
+              標高の最大値
+              <input id="maxAltitude" type="number" placeholder="[m]" step="0.1" />
+            </label>
           </div>
-        </fieldset>
-        <fieldset class="pure-u-1">
-          <div class="pure-u-1 pure-u-md-1-5">
-            <label for="shouldFillLabel" class="pure-u-23-24">
+          <div class="pure-u-1">
+            <label class="pure-u-23-24">
               <input id="shouldFillLabel" type="checkbox" checked /> 塗りつぶす
             </label>
           </div>
-        </fieldset>
-      </div>
+        </div>
+      </fieldset>
     </form>
 
-    <p>
-    <div class="chart-container">
+    <p class="chart-container">
       <canvas id="chart"></canvas>
-    </div>
     </p>
 
     <form class="pure-form pure-form-stacked">
@@ -96,16 +105,16 @@
         <div class="pure-g">
           <div class="pure-u-1">
             <div class="pure-u-1 pure-u-md-1-5">
-              <label for="exportImageWidth">幅</label>
-              <span class="pure-u-23-24">
+              <label class="pure-u-23-24">
+                幅
                 <input id="exportImageWidth" type="number" placeholder="[px]" step="1" min="0" />
-              </span>
+              </label>
             </div>
             <div class="pure-u-1 pure-u-md-1-5">
-              <label for="exportImageHeight">高さ</label>
-              <span class="pure-u-23-24">
+              <label class="pure-u-23-24">
+                高さ
                 <input id="exportImageHeight" type="number" placeholder="[px]" step="1" min="0" />
-              </span>
+              </label>
             </div>
           </div>
           <div class="pure-u-1-5">
