@@ -273,7 +273,7 @@ function retrieveDisplaySettings() {
     'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
     'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
     'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
-    'shouldFill': nullOrNonBlankString(document.getElementById('shouldFill').value),
+    'should_fill': nullOrNonBlankString(document.getElementById('shouldFill').value),
   }
 }
 
