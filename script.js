@@ -265,6 +265,14 @@ function updateMinimumMaxDistance(minDistance) {
   maxDistanceInput.min = minDistance
 }
 
+// TODO: inputをconstで定義する
+const displaySettings = {
+  'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
+  'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
+  'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+  'shouldFill': nullOrNonBlankString(document.getElementById('shouldFill').value),
+}
+
 function sendLoadFileEvent() {
   dataLayer.push(
     {
@@ -277,9 +285,7 @@ function sendChangeChartSettingsEvent() {
   dataLayer.push(
     {
       'event': 'change_chart_settings',
-      'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
-      'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
-      'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+      ...displaySettings
     }
   )
 }
@@ -288,9 +294,7 @@ function sendDownloadImageEvent() {
   dataLayer.push(
     {
       'event': 'download_image',
-      'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
-      'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
-      'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+      ...displaySettings,
       'width': exportImageWidthInput.value,
       'height': exportImageHeightInput.value,
     }
