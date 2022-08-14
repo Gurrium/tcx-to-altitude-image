@@ -74,6 +74,8 @@ function debounce(func, delay) {
 document.getElementById('shouldFill').addEventListener('input', event => {
   chart.data.datasets[0].backgroundColor = event.target.checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
   chart.update()
+
+  sendChangeChartSettingsEvent()
 })
 
 downloadButton.addEventListener('click', e => {
@@ -266,11 +268,13 @@ function updateMinimumMaxDistance(minDistance) {
 }
 
 // TODO: inputをconstで定義する
-const displaySettings = {
-  'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
-  'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
-  'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
-  'shouldFill': nullOrNonBlankString(document.getElementById('shouldFill').value),
+function retrieveDisplaySettings() {
+  return {
+    'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
+    'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
+    'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
+    'shouldFill': nullOrNonBlankString(document.getElementById('shouldFill').value),
+  }
 }
 
 function sendLoadFileEvent() {
@@ -285,7 +289,7 @@ function sendChangeChartSettingsEvent() {
   dataLayer.push(
     {
       'event': 'change_chart_settings',
-      ...displaySettings
+      ...retrieveDisplaySettings()
     }
   )
 }
@@ -294,7 +298,7 @@ function sendDownloadImageEvent() {
   dataLayer.push(
     {
       'event': 'download_image',
-      ...displaySettings,
+      ...retrieveDisplaySettings(),
       'width': exportImageWidthInput.value,
       'height': exportImageHeightInput.value,
     }
