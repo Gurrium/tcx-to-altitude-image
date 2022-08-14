@@ -71,7 +71,7 @@ function debounce(func, delay) {
   timerID = setTimeout(func, delay)
 }
 
-document.getElementById('shouldFillLabel').addEventListener('input', event => {
+document.getElementById('shouldFill').addEventListener('input', event => {
   chart.data.datasets[0].backgroundColor = event.target.checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
   chart.update()
 })
