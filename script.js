@@ -6,6 +6,10 @@ const downloadButton = document.getElementById('download-button')
 const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
+const maxDistanceInput = document.getElementById('maxDistance')
+const minDistanceInput = document.getElementById('minDistance')
+const maxAltitudeInput = document.getElementById('maxAltitude')
+const shouldFillInput = document.getElementById('shouldFill')
 
 fileInput.addEventListener('change', event => {
   const fileList = event.target.files;
@@ -17,7 +21,7 @@ fileInput.addEventListener('change', event => {
   sendLoadFileEvent()
 })
 
-document.getElementById('maxDistance').addEventListener('input', event => {
+maxDistanceInput.addEventListener('input', event => {
   debounce(_ => {
     const parsed = parseFloat(event.target.value)
     if (isNaN(parsed)) {
@@ -33,7 +37,7 @@ document.getElementById('maxDistance').addEventListener('input', event => {
   }, 500)
 })
 
-document.getElementById('minDistance').addEventListener('input', event => {
+minDistanceInput.addEventListener('input', event => {
   debounce(_ => {
     const parsed = parseFloat(event.target.value)
     if (isNaN(parsed)) {
@@ -49,7 +53,7 @@ document.getElementById('minDistance').addEventListener('input', event => {
   }, 500)
 })
 
-document.getElementById('maxAltitude').addEventListener('input', event => {
+maxAltitudeInput.addEventListener('input', event => {
   debounce(_ => {
     const parsed = parseFloat(event.target.value)
     if (isNaN(parsed)) {
@@ -71,7 +75,7 @@ function debounce(func, delay) {
   timerID = setTimeout(func, delay)
 }
 
-document.getElementById('shouldFill').addEventListener('input', event => {
+shouldFillInput.addEventListener('input', event => {
   chart.data.datasets[0].backgroundColor = event.target.checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
   chart.update()
 
@@ -267,13 +271,12 @@ function updateMinimumMaxDistance(minDistance) {
   maxDistanceInput.min = minDistance
 }
 
-// TODO: inputをconstで定義する
 function retrieveDisplaySettings() {
   return {
-    'min_distance': nullOrNonBlankString(document.getElementById('minDistance').value),
-    'max_distance': nullOrNonBlankString(document.getElementById('maxDistance').value),
-    'max_altitude': nullOrNonBlankString(document.getElementById('maxAltitude').value),
-    'should_fill': nullOrNonBlankString(document.getElementById('shouldFill').value),
+    'min_distance': nullOrNonBlankString(maxDistanceInput.value),
+    'max_distance': nullOrNonBlankString(minDistanceInput.value),
+    'max_altitude': nullOrNonBlankString(maxAltitudeInput.value),
+    'should_fill': nullOrNonBlankString(shouldFillInput.value),
   }
 }
 
