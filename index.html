@@ -3,7 +3,6 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
   <!-- Google Tag Manager -->
   <script>(function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
@@ -34,6 +33,7 @@
 
   <!-- Info -->
   <title>TTE: TcxToElevation</title>
+  <meta charset="UTF-8">
   <meta name="description" content="tcxファイルから標高図を表示して画像としてダウンロードできるツールです。">
   <meta property="og:type" content="website">
   <meta property="og:description" content="tcxファイルから標高図を表示して画像としてダウンロードできるツールです。">
@@ -64,33 +64,34 @@
           </div>
         </div>
       </fieldset>
-
-      <fieldset class="pure-g">
-        <legend class="pure-u-1">
-          表示設定
-        </legend>
-        <div class="pure-u-1 pure-u-md-1-5">
-          <label class="pure-u-23-24">
-            始点
-            <input id="minDistance" type="number" placeholder="[km]" step="0.1" />
-          </label>
-        </div>
-        <div class="pure-u-1 pure-u-md-1-5">
-          <label class="pure-u-23-24">
-            終点
-            <input id="maxDistance" type="number" placeholder="[km]" step="0.1" />
-          </label>
-        </div>
-        <div class="pure-u-1 pure-u-md-1-5">
-          <label class="pure-u-23-24">
-            標高の最大値
-            <input id="maxAltitude" type="number" placeholder="[m]" step="0.1" />
-          </label>
-        </div>
-        <div class="pure-u-1">
-          <label class="pure-u-23-24">
-            <input id="shouldFill" type="checkbox" checked /> 塗りつぶす
-          </label>
+      <fieldset>
+        <div class="pure-g">
+          <legend class="pure-u-1">
+            表示設定
+          </legend>
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label class="pure-u-23-24">
+              始点
+              <input id="minDistance" type="number" placeholder="[km]" step="0.1" />
+            </label>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label class="pure-u-23-24">
+              終点
+              <input id="maxDistance" type="number" placeholder="[km]" step="0.1" />
+            </label>
+          </div>
+          <div class="pure-u-1 pure-u-md-1-5">
+            <label class="pure-u-23-24">
+              標高の最大値
+              <input id="maxAltitude" type="number" placeholder="[m]" step="0.1" />
+            </label>
+          </div>
+          <div class="pure-u-1">
+            <label class="pure-u-23-24">
+              <input id="shouldFill" type="checkbox" checked /> 塗りつぶす
+            </label>
+          </div>
         </div>
       </fieldset>
     </form>
@@ -100,30 +101,38 @@
     </p>
 
     <form class="pure-form pure-form-stacked">
-      <fieldset class="pure-g">
-        <legend class="pure-u-1">
-          ダウンロード設定
-        </legend>
-        <div class="pure-u-1">
-          <div class="pure-u-1 pure-u-md-1-5">
-            <label class="pure-u-23-24">
-              幅
-              <input id="exportImageWidth" type="number" placeholder="[px]" step="1" min="0" />
-            </label>
+      <fieldset>
+        <div class="pure-g">
+          <legend class="pure-u-1">
+            ダウンロード設定
+          </legend>
+          <div class="pure-u-1">
+            <div class="pure-u-1 pure-u-md-1-5">
+              <label class="pure-u-23-24">
+                幅
+                <input id="exportImageWidth" type="number" placeholder="[px]" step="1" min="0" />
+              </label>
+            </div>
+            <div class="pure-u-1 pure-u-md-1-5">
+              <label class="pure-u-23-24">
+                高さ
+                <input id="exportImageHeight" type="number" placeholder="[px]" step="1" min="0" />
+              </label>
+            </div>
+            <div class="pure-u-1 pure-u-md-1-5">
+              <label class="pure-u-23-24">
+                区間の一括指定
+                <input id="" type="text" placeholder="50, 100, 150" pattern="^[0-9]+(( *, *)([0-9]+))*$" />
+                <span class="pure-form-message">※TODO</span>
+              </label>
+            </div>
           </div>
-          <div class="pure-u-1 pure-u-md-1-5">
-            <label class="pure-u-23-24">
-              高さ
-              <input id="exportImageHeight" type="number" placeholder="[px]" step="1" min="0" />
-            </label>
+          <div class="pure-u-1-5">
+            <button id="download-button" class="pure-button pure-button-primary pure-button-disabled">
+              画像をダウンロードする
+            </button>
+            <a id="hidden-download-link" target="_blank" href="data:image/png;base64,Can+you+see+me"></a>
           </div>
-        </div>
-        <div class="pure-u-1-5">
-          <button id="download-button" class="pure-button pure-button-primary pure-button-disabled">
-            画像をダウンロードする
-          </button>
-          <a id="hidden-download-link" target="_blank" href="data:image/png;base64,Can+you+see+me"></a>
-        </div>
       </fieldset>
     </form>
   </main>
@@ -139,8 +148,7 @@
       Wishlist: <a href="https://www.amazon.jp/hz/wishlist/ls/WUEQ18VE6LAE?ref_=wl_share" target="_blank">🍠</a>
     </address>
     <p>
-      Powered by <a href="https://purecss.io/" target="_blank">Pure.css</a> and <a href="https://www.netlify.com/"
-        target="_blank">Netlify</a>
+      Powered by <a href="https://purecss.io/" target="_blank">Pure.css</a> and <a href="https://www.netlify.com/" target="_blank">Netlify</a>
     </p>
   </footer>
 
