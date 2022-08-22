@@ -6,6 +6,7 @@ const downloadButton = document.getElementById('download-button')
 const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
+const splitPointsInput = document.getElementById('splitPoints')
 const maxDistanceInput = document.getElementById('maxDistance')
 const minDistanceInput = document.getElementById('minDistance')
 const maxAltitudeInput = document.getElementById('maxAltitude')
@@ -99,6 +100,7 @@ exportImageWidthInput.addEventListener('input', event => {
     exportImageHeightInput.setAttribute('required', '')
   }
 })
+
 exportImageHeightInput.addEventListener('input', event => {
   updateDownloadButton()
 
@@ -107,6 +109,25 @@ exportImageHeightInput.addEventListener('input', event => {
   } else {
     exportImageWidthInput.setAttribute('required', '')
   }
+})
+
+splitPointsInput.addEventListener('input', event => {
+  const splitPoints = event.value.split(',').map(s => parseFloat(s))
+
+  if (splitPoints.length < 1) { return }
+
+  const minDistance = parseFloat(minDistanceInput.value)
+  const maxDistance = parseFloat(maxDistanceInput.value)
+  var prev = 0
+  splitPoints.forEach(current => {
+    if (prev >= current) { return }
+    if (current < minDistance || maxDistance < current) { return }
+
+    prev = current
+  })
+
+  // inputのvalidityを更新する
+  // ダウンロードボタンを更新する
 })
 
 function parseData(content) {
@@ -302,8 +323,10 @@ function sendDownloadImageEvent() {
     {
       'event': 'download_image',
       ...retrieveDisplaySettings(),
+      // TODO: ダウンロード設定もretrieveDisplaySettingsっぽくする
       'width': exportImageWidthInput.value,
       'height': exportImageHeightInput.value,
+      // TODO: 分割地点も送る
     }
   )
 }
