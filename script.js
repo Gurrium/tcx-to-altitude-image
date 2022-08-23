@@ -112,7 +112,13 @@ exportImageHeightInput.addEventListener('input', event => {
 })
 
 splitPointsInput.addEventListener('input', event => {
-  const splitPoints = event.value.split(',').map(s => parseFloat(s))
+  const splitPoints = event.target.value.split(',')
+    .map(s => {
+      const point = parseFloat(s)
+
+      return isNaN(point) ? null : point
+    })
+    .filter(e => e)
 
   if (splitPoints.length < 1) { return }
 
