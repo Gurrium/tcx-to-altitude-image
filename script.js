@@ -128,14 +128,23 @@ splitPointsInput.addEventListener('input', event => {
   const maxDistance = parseFloat(maxDistanceInput.value)
   var prev = 0
   splitPoints.forEach(current => {
-    if (prev >= current) { return }
-    if (current < minDistance || maxDistance < current) { return }
+    if (prev >= current) {
+      // TODO: エラーメッセージを表示する
+      event.target.setCustomValidity("昇順に指定してください")
+      return
+    }
+    if (current < minDistance || maxDistance < current) {
+      // TODO: エラーメッセージを表示する
+      event.target.setCustomValidity("始点以上、終点以下の範囲内で指定してください")
+      return
+    }
 
     prev = current
   })
 
-  // inputのvalidityを更新する
   // ダウンロードボタンを更新する
+
+  event.target.reportValidity()
 })
 
 function parseData(content) {
