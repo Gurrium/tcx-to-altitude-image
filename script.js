@@ -255,6 +255,7 @@ function updateChart(updatedData) {
   chart.update()
 }
 
+// TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
 function updateDownloadButton() {
   const width = parseInt(exportImageWidthInput.value)
   const height = parseInt(exportImageHeightInput.value)
