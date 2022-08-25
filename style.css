@@ -37,8 +37,11 @@ footer a {
     font-size: 100%;
 }
 
+.pure-form input:invalid {
+    color: #b94a48;
+    border-color: #e9322d;
+}
+
 #download-button {
     margin: 0.5em 0;
 }
-
-/* TODO: フォーカスされてなくてもinvalidなinputは赤くする */
