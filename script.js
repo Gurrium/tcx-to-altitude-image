@@ -112,37 +112,42 @@ exportImageHeightInput.addEventListener('input', event => {
 })
 
 splitPointsInput.addEventListener('input', event => {
-  if (!event.target.validity.valid) { return }
+  var validityMessages = []
 
-  const splitPoints = event.target.value.split(',')
-    .map(s => {
-      const point = parseFloat(s)
+  if (event.target.validity.patternMismatch) {
+    // TODO: 別にカンマ区切りでなくていいのでは
+    // [0-9][^0-9]+[0-9]+みたいなのでも
+    validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
+  } else {
+    const splitPoints = event.target.value.split(',')
+      .map(s => {
+        const point = parseFloat(s)
 
-      return isNaN(point) ? null : point
+        return isNaN(point) ? null : point
+      })
+      .filter(e => e)
+
+    const minDistance = parseFloat(minDistanceInput.value)
+    const maxDistance = parseFloat(maxDistanceInput.value)
+    var prev = 0
+    splitPoints.forEach(current => {
+      if (prev >= current) {
+        validityMessages.push("昇順に指定してください")
+      }
+
+      if (current < minDistance || maxDistance < current) {
+        validityMessages.push("表示されている範囲で指定してください")
+      }
+
+      prev = current
     })
-    .filter(e => e)
+  }
 
-  if (splitPoints.length < 1) { return }
-
-  const minDistance = parseFloat(minDistanceInput.value)
-  const maxDistance = parseFloat(maxDistanceInput.value)
-  var prev = 0
-  splitPoints.forEach(current => {
-    if (prev >= current) {
-      // TODO: エラーメッセージを表示する
-      event.target.setCustomValidity("昇順に指定してください")
-      return
-    }
-    if (current < minDistance || maxDistance < current) {
-      // TODO: エラーメッセージを表示する
-      event.target.setCustomValidity("始点以上、終点以下の範囲内で指定してください")
-      return
-    }
-
-    prev = current
-  })
-
-  // ダウンロードボタンを更新する
+  if (validityMessages.length == 0) {
+    event.target.setCustomValidity('')
+  } else {
+    event.target.setCustomValidity(validityMessages.join("\n"))
+  }
 
   event.target.reportValidity()
 })
