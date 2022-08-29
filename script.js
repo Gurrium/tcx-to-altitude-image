@@ -115,8 +115,6 @@ splitPointsInput.addEventListener('input', event => {
   var validityMessages = []
 
   if (event.target.validity.patternMismatch) {
-    // TODO: 別にカンマ区切りでなくていいのでは
-    // [0-9][^0-9]+[0-9]+みたいなのでも
     validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
   } else {
     const splitPoints = event.target.value.split(',')
