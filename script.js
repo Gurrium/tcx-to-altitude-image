@@ -1,4 +1,5 @@
 var data = null
+var splitPoints = []
 const parser = new DOMParser()
 const chart = createChart()
 const fileInput = document.getElementById('route-file')
@@ -113,11 +114,12 @@ exportImageHeightInput.addEventListener('input', event => {
 
 splitPointsInput.addEventListener('input', event => {
   var validityMessages = []
+  var rawSplitPoints
 
   if (event.target.validity.patternMismatch) {
     validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
   } else {
-    const splitPoints = event.target.value.split(',')
+    rawSplitPoints = event.target.value.split(',')
       .map(s => {
         const point = parseFloat(s)
 
@@ -128,7 +130,7 @@ splitPointsInput.addEventListener('input', event => {
     const minDistance = parseFloat(minDistanceInput.value)
     const maxDistance = parseFloat(maxDistanceInput.value)
     var prev = 0
-    splitPoints.forEach(current => {
+    rawSplitPoints.forEach(current => {
       if (prev >= current) {
         validityMessages.push("昇順に指定してください")
       }
@@ -143,6 +145,8 @@ splitPointsInput.addEventListener('input', event => {
 
   if (validityMessages.length == 0) {
     event.target.setCustomValidity('')
+
+    splitPoints = rawSplitPoints
   } else {
     event.target.setCustomValidity(validityMessages.join("\n"))
   }
