@@ -294,15 +294,23 @@ function download() {
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
-  var outputFileName = 'elevation.png'
+  var baseOutputFileName = 'elevation'
+
   const inputFile = fileInput.files[0]
   if (inputFile != null && inputFile.name.split('.').length > 1) {
-    outputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + outputFileName
+    baseOutputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + baseOutputFileName
   }
 
-  hiddenDownloadLink.href = chart.toBase64Image()
-  hiddenDownloadLink.download = outputFileName
-  hiddenDownloadLink.click()
+  if (splitPoints.length > 0) {
+    // TODO: 表示されている最小値からsplitPoint刻みでダウンロードする
+    splitPoints.forEach(splitPoint => {
+      baseOutputFileName += `-${splitPoint}.png`
+    })
+  } else {
+    hiddenDownloadLink.href = chart.toBase64Image()
+    hiddenDownloadLink.download = baseOutputFileName + '.png'
+    hiddenDownloadLink.click()
+  }
 
   chart.resize()
 }
