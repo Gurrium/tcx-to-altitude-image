@@ -255,11 +255,11 @@ function createChart() {
   })
 }
 
-function updateChart(updatedData) {
+function updateChart(updatedData, animated = true) {
   chart.data.datasets[0].data = updatedData
   chart.options.scales.x.min = updatedData[0].x
   chart.options.scales.x.max = updatedData[updatedData.length - 1].x
-  chart.update()
+  chart.update(animated ? null : 'none')
 }
 
 // TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
@@ -302,10 +302,17 @@ function download() {
   }
 
   if (splitPoints.length > 0) {
-    // TODO: 表示されている最小値からsplitPoint刻みでダウンロードする
+    var min = parseFloat(minDistanceInput.value)
     splitPoints.forEach(splitPoint => {
-      baseOutputFileName += `-${splitPoint}.png`
+      updateChart(croppedData(min, splitPoint), false)
+
+      hiddenDownloadLink.href = chart.toBase64Image()
+      hiddenDownloadLink.download = `${baseOutputFileName}-${splitPoint}.png`
+      hiddenDownloadLink.click()
+
+      min = splitPoint
     })
+    // TODO: グラフが変わらないようにする
   } else {
     hiddenDownloadLink.href = chart.toBase64Image()
     hiddenDownloadLink.download = baseOutputFileName + '.png'
