@@ -302,17 +302,23 @@ function download() {
   }
 
   if (splitPoints.length > 0) {
-    var min = parseFloat(minDistanceInput.value)
-    splitPoints.forEach(splitPoint => {
-      updateChart(croppedData(min, splitPoint), false)
+    const data = chart.data.datasets[0].data
+    var minDistance = data[0].x
+    var maxDistance = data[data.length - 1].x
 
+    var lower = minDistance
+    splitPoints.forEach(upper => {
+      updateChart(croppedData(lower, upper), false)
+
+      // TODO: 標高の最大値を表示されているものに固定する
       hiddenDownloadLink.href = chart.toBase64Image()
-      hiddenDownloadLink.download = `${baseOutputFileName}-${splitPoint}.png`
+      hiddenDownloadLink.download = `${baseOutputFileName}-${upper}.png`
       hiddenDownloadLink.click()
 
-      min = splitPoint
+      lower = upper
     })
-    // TODO: グラフが変わらないようにする
+
+    updateChart(croppedData(minDistance, maxDistance), false)
   } else {
     hiddenDownloadLink.href = chart.toBase64Image()
     hiddenDownloadLink.download = baseOutputFileName + '.png'
