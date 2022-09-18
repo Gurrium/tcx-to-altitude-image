@@ -307,7 +307,7 @@ function download() {
     var maxDistance = data[data.length - 1].x
 
     var lower = minDistance
-    splitPoints.forEach(upper => {
+    splitPoints.concat(maxDistance).forEach(upper => {
       updateChart(croppedData(lower, upper), false)
 
       // TODO: 標高の最大値を表示されているものに固定する
