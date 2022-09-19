@@ -310,7 +310,6 @@ function download() {
     splitPoints.concat(maxDistance).forEach(upper => {
       updateChart(croppedData(lower, upper), false)
 
-      // TODO: 標高の最大値を表示されているものに固定する
       hiddenDownloadLink.href = chart.toBase64Image()
       hiddenDownloadLink.download = `${baseOutputFileName}-${upper}.png`
       hiddenDownloadLink.click()
