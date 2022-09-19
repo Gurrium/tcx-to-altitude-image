@@ -152,6 +152,7 @@ splitPointsInput.addEventListener('input', event => {
   }
 
   event.target.reportValidity()
+  updateDownloadButton()
 })
 
 function parseData(content) {
@@ -267,10 +268,11 @@ function updateDownloadButton() {
   const width = parseInt(exportImageWidthInput.value)
   const height = parseInt(exportImageHeightInput.value)
 
-  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
   const isValidDataShown = chart.data.datasets[0].data.length > 1
+  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
+  const isValidSplitPoints = splitPointsInput.validity.valid
 
-  if (isValidDataShown && isValidSizeInput) {
+  if (isValidSizeInput && isValidDataShown && isValidSplitPoints) {
     enableDownloadButton()
   } else {
     disableDownloadButton()
@@ -278,12 +280,10 @@ function updateDownloadButton() {
 }
 
 function enableDownloadButton() {
-  downloadButton.classList.remove('pure-button-disabled')
   downloadButton.disabled = false
 }
 
 function disableDownloadButton() {
-  downloadButton.classList.add('pure-button-disabled')
   downloadButton.disabled = true
 }
 
