@@ -102,38 +102,40 @@
 
     <form class="pure-form pure-form-stacked">
       <fieldset>
+        <legend>
+          ダウンロード設定
+        </legend>
         <div class="pure-g">
-          <legend class="pure-u-1">
-            ダウンロード設定
-          </legend>
+          <div class="pure-u-1 pure-u-md-1-8">
+            <label for="exportImageWidth">
+              幅 [px]
+            </label>
+            <input id="exportImageWidth" class="pure-u-23-24" class="pure-u-23-24" type="number" placeholder="400"
+              step="1" min="0" />
+          </div>
+          <div class="pure-u-1 pure-u-md-1-8">
+            <label for="exportImageHeight">
+              高さ [px]
+            </label>
+            <input id="exportImageHeight" class="pure-u-23-24" class="pure-u-23-24" type="number" placeholder="300"
+              step="1" min="0" />
+          </div>
+          <div class="pure-u-1 pure-u-md-1-4">
+            <label for="splitPoints">
+              分割地点
+            </label>
+            <input id="splitPoints" class="pure-u-23-24" type="text" placeholder="50,100,150"
+              pattern="^([0-9]+(\.[0-9]+)?)(( *, *)([0-9]+(\.[0-9]+)?))*$" />
+          </div>
           <div class="pure-u-1">
-            <div class="pure-u-1 pure-u-md-1-5">
-              <label class="pure-u-1 pure-u-md-23-24">
-                幅 [px]
-                <input id="exportImageWidth" class="pure-u-1" type="number" placeholder="400" step="1" min="0" />
-              </label>
-            </div>
-            <div class="pure-u-1 pure-u-md-1-5">
-              <label class="pure-u-1 pure-u-md-23-24">
-                高さ [px]
-                <input id="exportImageHeight" class="pure-u-1" type="number" placeholder="300" step="1" min="0" />
-              </label>
-            </div>
-            <div class="pure-u-1 pure-u-md-2-5">
-              <label class="pure-u-1" for="splitPoints">
-                分割地点
-              </label>
-              <input id="splitPoints" class="pure-u-1" type="text" placeholder="50,100,150"
-                pattern="^([0-9]+(\.[0-9]+)?)(( *, *)([0-9]+(\.[0-9]+)?))*$" />
-              <span class="pure-form-message message-for-invalid-input"></span>
+            <div class="pure-u-1 pure-u-md-1-8">
+              <button id="download-button" class="pure-u-23-24 pure-button pure-button-primary">
+                画像をダウンロードする
+              </button>
+              <a id="hidden-download-link" target="_blank" href="data:image/png;base64,Can+you+see+me"></a>
             </div>
           </div>
-          <div class="pure-u-1 pure-u-md-1-5">
-            <button id="download-button" class="pure-u-1 pure-u-md-23-24 pure-button pure-button-primary">
-              画像をダウンロードする
-            </button>
-            <a id="hidden-download-link" target="_blank" href="data:image/png;base64,Can+you+see+me"></a>
-          </div>
+        </div>
       </fieldset>
     </form>
   </main>
