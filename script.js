@@ -1,4 +1,5 @@
 var data = null
+var splitPoints = []
 const parser = new DOMParser()
 const chart = createChart()
 const fileInput = document.getElementById('route-file')
@@ -6,6 +7,7 @@ const downloadButton = document.getElementById('download-button')
 const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
+const splitPointsInput = document.getElementById('splitPoints')
 const maxDistanceInput = document.getElementById('maxDistance')
 const minDistanceInput = document.getElementById('minDistance')
 const maxAltitudeInput = document.getElementById('maxAltitude')
@@ -99,6 +101,7 @@ exportImageWidthInput.addEventListener('input', event => {
     exportImageHeightInput.setAttribute('required', '')
   }
 })
+
 exportImageHeightInput.addEventListener('input', event => {
   updateDownloadButton()
 
@@ -107,6 +110,49 @@ exportImageHeightInput.addEventListener('input', event => {
   } else {
     exportImageWidthInput.setAttribute('required', '')
   }
+})
+
+splitPointsInput.addEventListener('input', event => {
+  var validityMessages = []
+  var rawSplitPoints
+
+  if (event.target.validity.patternMismatch) {
+    validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
+  } else {
+    rawSplitPoints = event.target.value.split(',')
+      .map(s => {
+        const point = parseFloat(s)
+
+        return isNaN(point) ? null : point
+      })
+      .filter(e => e)
+
+    const minDistance = parseFloat(minDistanceInput.value)
+    const maxDistance = parseFloat(maxDistanceInput.value)
+    var prev = 0
+    rawSplitPoints.forEach(current => {
+      if (prev >= current) {
+        validityMessages.push("昇順に指定してください")
+      }
+
+      if (current < minDistance || maxDistance < current) {
+        validityMessages.push("表示されている範囲で指定してください")
+      }
+
+      prev = current
+    })
+  }
+
+  if (validityMessages.length == 0) {
+    event.target.setCustomValidity('')
+
+    splitPoints = rawSplitPoints
+  } else {
+    event.target.setCustomValidity(validityMessages.join("\n"))
+  }
+
+  event.target.reportValidity()
+  updateDownloadButton()
 })
 
 function parseData(content) {
@@ -210,21 +256,23 @@ function createChart() {
   })
 }
 
-function updateChart(updatedData) {
+function updateChart(updatedData, animated = true) {
   chart.data.datasets[0].data = updatedData
   chart.options.scales.x.min = updatedData[0].x
   chart.options.scales.x.max = updatedData[updatedData.length - 1].x
-  chart.update()
+  chart.update(animated ? null : 'none')
 }
 
+// TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
 function updateDownloadButton() {
   const width = parseInt(exportImageWidthInput.value)
   const height = parseInt(exportImageHeightInput.value)
 
-  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
   const isValidDataShown = chart.data.datasets[0].data.length > 1
+  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
+  const isValidSplitPoints = splitPointsInput.validity.valid
 
-  if (isValidDataShown && isValidSizeInput) {
+  if (isValidSizeInput && isValidDataShown && isValidSplitPoints) {
     enableDownloadButton()
   } else {
     disableDownloadButton()
@@ -232,12 +280,10 @@ function updateDownloadButton() {
 }
 
 function enableDownloadButton() {
-  downloadButton.classList.remove('pure-button-disabled')
   downloadButton.disabled = false
 }
 
 function disableDownloadButton() {
-  downloadButton.classList.add('pure-button-disabled')
   downloadButton.disabled = true
 }
 
@@ -248,15 +294,35 @@ function download() {
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
-  var outputFileName = 'elevation.png'
+  var baseOutputFileName = 'elevation'
+
   const inputFile = fileInput.files[0]
   if (inputFile != null && inputFile.name.split('.').length > 1) {
-    outputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + outputFileName
+    baseOutputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + baseOutputFileName
   }
 
-  hiddenDownloadLink.href = chart.toBase64Image()
-  hiddenDownloadLink.download = outputFileName
-  hiddenDownloadLink.click()
+  if (splitPoints.length > 0) {
+    const data = chart.data.datasets[0].data
+    var minDistance = data[0].x
+    var maxDistance = data[data.length - 1].x
+
+    var lower = minDistance
+    splitPoints.concat(maxDistance).forEach(upper => {
+      updateChart(croppedData(lower, upper), false)
+
+      hiddenDownloadLink.href = chart.toBase64Image()
+      hiddenDownloadLink.download = `${baseOutputFileName}-${upper}.png`
+      hiddenDownloadLink.click()
+
+      lower = upper
+    })
+
+    updateChart(croppedData(minDistance, maxDistance), false)
+  } else {
+    hiddenDownloadLink.href = chart.toBase64Image()
+    hiddenDownloadLink.download = baseOutputFileName + '.png'
+    hiddenDownloadLink.click()
+  }
 
   chart.resize()
 }
@@ -302,8 +368,10 @@ function sendDownloadImageEvent() {
     {
       'event': 'download_image',
       ...retrieveDisplaySettings(),
+      // TODO: ダウンロード設定もretrieveDisplaySettingsっぽくする
       'width': exportImageWidthInput.value,
       'height': exportImageHeightInput.value,
+      // TODO: 分割地点も送る
     }
   )
 }
