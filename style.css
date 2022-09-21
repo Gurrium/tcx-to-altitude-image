@@ -42,15 +42,6 @@ footer a {
     border-color: #e9322d;
 }
 
-input + .pure-form-message.message-for-invalid-input {
-    display: none;
-}
-
-input:invalid + .pure-form-message.message-for-invalid-input {
-    display: unset;
-    color: #b94a48;
-}
-
 #download-button {
     margin: 0.5em 0;
 }
