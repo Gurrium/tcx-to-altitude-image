@@ -371,7 +371,7 @@ function sendDownloadImageEvent() {
       // TODO: ダウンロード設定もretrieveDisplaySettingsっぽくする
       'width': exportImageWidthInput.value,
       'height': exportImageHeightInput.value,
-      // TODO: 分割地点も送る
+      'split_points': splitPoints,
     }
   )
 }
