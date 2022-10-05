@@ -104,24 +104,38 @@
           ダウンロード設定
         </legend>
         <div class="pure-g">
-          <div class="pure-u-1 pure-u-md-1-8">
-            <label for="exportImageWidth">
-              幅 [px]
-            </label>
-            <input id="exportImageWidth" class="pure-u-23-24" type="number" placeholder="400" step="1" min="0" />
+          <div class="pure-u-1">
+            <div class="pure-u-1 pure-u-md-1-8">
+              <label for="exportImageWidth">
+                幅 [px]
+              </label>
+              <input id="exportImageWidth" class="pure-u-1 pure-u-md-23-24" type="number" placeholder="400" step="1"
+                min="0" />
+            </div>
+            <div class="pure-u-1 pure-u-md-1-8">
+              <label for="exportImageHeight">
+                高さ [px]
+              </label>
+              <input id="exportImageHeight" class="pure-u-1 pure-u-md-23-24" type="number" placeholder="300" step="1"
+                min="0" />
+            </div>
           </div>
-          <div class="pure-u-1 pure-u-md-1-8">
-            <label for="exportImageHeight">
-              高さ [px]
-            </label>
-            <input id="exportImageHeight" class="pure-u-23-24" type="number" placeholder="300" step="1" min="0" />
+          <div class="pure-u-1">
+            <div class="pure-u-1 pure-u-md-1-4">
+              <label for="splitPoints">
+                分割地点 [km]
+              </label>
+              <input id="splitPoints" class="pure-u-1" type="text" placeholder="50,100,150"
+                pattern="^([0-9]+(\.[0-9]+)?)(( *, *)([0-9]+(\.[0-9]+)?))*$" />
+            </div>
           </div>
-          <div class="pure-u-1 pure-u-md-1-4">
-            <label for="splitPoints">
-              分割地点 [km]
-            </label>
-            <input id="splitPoints" class="pure-u-23-24" type="text" placeholder="50,100,150"
-              pattern="^([0-9]+(\.[0-9]+)?)(( *, *)([0-9]+(\.[0-9]+)?))*$" />
+          <div class="pure-u-1">
+            <div class="pure-u-1 pure-u-md-1-4">
+              <label for="exportImageFontSize">
+                フォントサイズ [px]
+              </label>
+              <input id="exportImageFontSize" class="pure-u-1" type="number" placeholder="12" step="1" min="1" />
+            </div>
           </div>
           <div class="pure-u-1">
             <div class="pure-u-1-4">
