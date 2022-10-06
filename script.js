@@ -8,6 +8,7 @@ const hiddenDownloadLink = document.getElementById('hidden-download-link')
 const exportImageWidthInput = document.getElementById('exportImageWidth')
 const exportImageHeightInput = document.getElementById('exportImageHeight')
 const splitPointsInput = document.getElementById('splitPoints')
+const exportImageFontSizeInput = document.getElementById('exportImageFontSize')
 const maxDistanceInput = document.getElementById('maxDistance')
 const minDistanceInput = document.getElementById('minDistance')
 const maxAltitudeInput = document.getElementById('maxAltitude')
@@ -294,6 +295,13 @@ function download() {
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
+  const exportImageFontSize = parseInt(exportImageFontSizeInput.value)
+  const defaultFontSize = Chart.defaults.font.size
+  if (!isNaN(exportImageFontSize)) {
+    Chart.defaults.font.size = exportImageFontSize
+    chart.update('none')
+  }
+
   var baseOutputFileName = 'elevation'
 
   const inputFile = fileInput.files[0]
@@ -324,6 +332,8 @@ function download() {
     hiddenDownloadLink.click()
   }
 
+  Chart.defaults.font.size = defaultFontSize
+  chart.update('none')
   chart.resize()
 }
 
