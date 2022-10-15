@@ -1,5 +1,5 @@
-var data = null
 var splitPoints = []
+var data: {x: number, y:number}[] = []
 const parser = new DOMParser()
 const chart = createChart()
 const fileInput = document.getElementById('route-file')
@@ -14,9 +14,9 @@ const minDistanceInput = document.getElementById('minDistance')
 const maxAltitudeInput = document.getElementById('maxAltitude')
 const shouldFillInput = document.getElementById('shouldFill')
 
-fileInput.addEventListener('change', event => {
-  const fileList = event.target.files;
-  fileList[0].text().then(content => {
+fileInput?.addEventListener('change', (event: InputEvent) => {
+  const fileList = (event?.target as HTMLInputElement).files;
+  fileList?.item(0)?.text().then(content => {
     data = parseData(content)
     updateChart(data)
   })
@@ -156,14 +156,15 @@ splitPointsInput.addEventListener('input', event => {
   updateDownloadButton()
 })
 
-function parseData(content) {
+function parseData(content: string): { x: number, y: number }[] {
   const doc = parser.parseFromString(content, 'text/xml')
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
+
   return trackpointTags
     .map(tag => {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
-      if (distanceTag == null || altitudeTag == null) {
+      if (distanceTag?.textContent == null || altitudeTag?.textContent == null) {
         return null
       }
 
@@ -178,7 +179,9 @@ function parseData(content) {
         y: altitude
       }
     })
-    .filter(e => e)
+    .filter((element): element is { x: number, y: number } => {
+      return element !== null
+    })
 }
 
 function croppedData(minDistance, maxDistance) {
