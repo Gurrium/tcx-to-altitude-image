@@ -1,18 +1,25 @@
-var splitPoints = []
-var data: {x: number, y:number}[] = []
+interface Data {
+  x: number,
+  y: number
+}
+var data: Data[] = []
+var splitPoints: number[] = []
+var maxDistance: number | null
+var minDistance: number | null
+
 const parser = new DOMParser()
 const chart = createChart()
-const fileInput = document.getElementById('route-file')
-const downloadButton = document.getElementById('download-button')
-const hiddenDownloadLink = document.getElementById('hidden-download-link')
-const exportImageWidthInput = document.getElementById('exportImageWidth')
-const exportImageHeightInput = document.getElementById('exportImageHeight')
-const splitPointsInput = document.getElementById('splitPoints')
-const exportImageFontSizeInput = document.getElementById('exportImageFontSize')
-const maxDistanceInput = document.getElementById('maxDistance')
-const minDistanceInput = document.getElementById('minDistance')
-const maxAltitudeInput = document.getElementById('maxAltitude')
-const shouldFillInput = document.getElementById('shouldFill')
+const fileInput = document.getElementById('route-file') as HTMLInputElement
+const downloadButton = document.getElementById('download-button') as HTMLButtonElement
+const hiddenDownloadLink = document.getElementById('hidden-download-link') as HTMLAnchorElement
+const exportImageWidthInput = document.getElementById('exportImageWidth') as HTMLInputElement
+const exportImageHeightInput = document.getElementById('exportImageHeight') as HTMLInputElement
+const splitPointsInput = document.getElementById('splitPoints') as HTMLInputElement
+const exportImageFontSizeInput = document.getElementById('exportImageFontSize') as HTMLInputElement
+const maxDistanceInput = document.getElementById('maxDistance') as HTMLInputElement
+const minDistanceInput = document.getElementById('minDistance') as HTMLInputElement
+const maxAltitudeInput = document.getElementById('maxAltitude') as HTMLInputElement
+const shouldFillInput = document.getElementById('shouldFill') as HTMLInputElement
 
 fileInput?.addEventListener('change', (event: InputEvent) => {
   const fileList = (event?.target as HTMLInputElement).files;
@@ -24,9 +31,9 @@ fileInput?.addEventListener('change', (event: InputEvent) => {
   sendLoadFileEvent()
 })
 
-maxDistanceInput.addEventListener('input', event => {
-  debounce(_ => {
-    const parsed = parseFloat(event.target.value)
+maxDistanceInput?.addEventListener('input', event => {
+  debounce(({ }) => {
+    const parsed = parseFloat((event.target as HTMLInputElement).value)
     if (isNaN(parsed)) {
       maxDistance = null
     } else {
@@ -40,9 +47,9 @@ maxDistanceInput.addEventListener('input', event => {
   }, 500)
 })
 
-minDistanceInput.addEventListener('input', event => {
-  debounce(_ => {
-    const parsed = parseFloat(event.target.value)
+minDistanceInput?.addEventListener('input', event => {
+  debounce(({ }) => {
+    const parsed = parseFloat((event.target as HTMLInputElement).value)
     if (isNaN(parsed)) {
       minDistance = null
     } else {
@@ -56,9 +63,9 @@ minDistanceInput.addEventListener('input', event => {
   }, 500)
 })
 
-maxAltitudeInput.addEventListener('input', event => {
-  debounce(_ => {
-    const parsed = parseFloat(event.target.value)
+maxAltitudeInput?.addEventListener('input', event => {
+  debounce(({ }) => {
+    const parsed = parseFloat((event.target as HTMLInputElement).value)
     if (isNaN(parsed)) {
       chart.options.scales.y.max = null
     } else {
@@ -71,21 +78,21 @@ maxAltitudeInput.addEventListener('input', event => {
   }, 500)
 })
 
-var timerID
-function debounce(func, delay) {
+var timerID: number
+function debounce(func: TimerHandler, delay: number) {
   clearTimeout(timerID)
 
   timerID = setTimeout(func, delay)
 }
 
-shouldFillInput.addEventListener('input', event => {
-  chart.data.datasets[0].backgroundColor = event.target.checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
+shouldFillInput?.addEventListener('input', event => {
+  chart.data.datasets[0].backgroundColor = (event.target as HTMLInputElement).checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
   chart.update()
 
   sendChangeChartSettingsEvent()
 })
 
-downloadButton.addEventListener('click', e => {
+downloadButton?.addEventListener('click', e => {
   download()
 
   sendDownloadImageEvent()
@@ -93,43 +100,44 @@ downloadButton.addEventListener('click', e => {
   e.preventDefault()
 })
 
-exportImageWidthInput.addEventListener('input', event => {
+exportImageWidthInput?.addEventListener('input', event => {
   updateDownloadButton()
 
-  if (event.target.value == '') {
-    exportImageHeightInput.removeAttribute('required')
+  if ((event.target as HTMLInputElement).value == '') {
+    exportImageHeightInput?.removeAttribute('required')
   } else {
-    exportImageHeightInput.setAttribute('required', '')
+    exportImageHeightInput?.setAttribute('required', '')
   }
 })
 
-exportImageHeightInput.addEventListener('input', event => {
+exportImageHeightInput?.addEventListener('input', event => {
   updateDownloadButton()
 
-  if (event.target.value == '') {
-    exportImageWidthInput.removeAttribute('required')
+  if ((event.target as HTMLInputElement).value == '') {
+    exportImageWidthInput?.removeAttribute('required')
   } else {
-    exportImageWidthInput.setAttribute('required', '')
+    exportImageWidthInput?.setAttribute('required', '')
   }
 })
 
-splitPointsInput.addEventListener('input', event => {
-  var validityMessages = []
-  var rawSplitPoints
+splitPointsInput?.addEventListener('input', event => {
+  const target = (event.target as HTMLInputElement)
+  var validityMessages: string[] = []
+  var rawSplitPoints: number[] = []
 
-  if (event.target.validity.patternMismatch) {
+  if (target.validity.patternMismatch) {
     validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
   } else {
-    rawSplitPoints = event.target.value.split(',')
+    rawSplitPoints = target.value.split(',')
       .map(s => {
         const point = parseFloat(s)
 
         return isNaN(point) ? null : point
       })
-      .filter(e => e)
+      .filter((e): e is number => e != null)
 
-    const minDistance = parseFloat(minDistanceInput.value)
-    const maxDistance = parseFloat(maxDistanceInput.value)
+    const minDistance = parseFloat(minDistanceInput?.value)
+    const maxDistance = parseFloat(maxDistanceInput?.value)
     var prev = 0
     rawSplitPoints.forEach(current => {
       if (prev >= current) {
@@ -145,18 +153,18 @@ splitPointsInput.addEventListener('input', event => {
   }
 
   if (validityMessages.length == 0) {
-    event.target.setCustomValidity('')
+    target.setCustomValidity('')
 
     splitPoints = rawSplitPoints
   } else {
-    event.target.setCustomValidity(validityMessages.join("\n"))
+    target.setCustomValidity(validityMessages.join("\n"))
   }
 
-  event.target.reportValidity()
+  target.reportValidity()
   updateDownloadButton()
 })
 
-function parseData(content: string): { x: number, y: number }[] {
+function parseData(content: string): Data[] {
   const doc = parser.parseFromString(content, 'text/xml')
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
 
@@ -179,16 +187,16 @@ function parseData(content: string): { x: number, y: number }[] {
         y: altitude
       }
     })
-    .filter((element): element is { x: number, y: number } => {
-      return element !== null
+    .filter((element): element is Data => {
+      return element != null
     })
 }
 
-function croppedData(minDistance, maxDistance) {
+function croppedData(minDistance: number | null, maxDistance: number | null) {
   var minIndex = null
   var maxIndex = null
 
-  if (!(minDistance == null)) {
+  if (minDistance != null) {
     minIndex = data.findIndex(e => e.x >= minDistance)
 
     if (minIndex == -1) {
@@ -196,7 +204,7 @@ function croppedData(minDistance, maxDistance) {
     }
   }
 
-  if (!(maxDistance == null)) {
+  if (maxDistance != null) {
     maxIndex = data.findIndex(e => e.x >= maxDistance)
 
     if (maxIndex == -1) {
@@ -210,7 +218,7 @@ function croppedData(minDistance, maxDistance) {
 }
 
 function createChart() {
-  const ctx = document.getElementById('chart').getContext('2d');
+  const ctx = (document.getElementById('chart') as HTMLCanvasElement).getContext('2d');
   const chartData = {
     datasets: [{
       data: [],
@@ -260,7 +268,7 @@ function createChart() {
   })
 }
 
-function updateChart(updatedData, animated = true) {
+function updateChart(updatedData: Data[], animated = true) {
   chart.data.datasets[0].data = updatedData
   chart.options.scales.x.min = updatedData[0].x
   chart.options.scales.x.max = updatedData[updatedData.length - 1].x
@@ -307,7 +315,7 @@ function download() {
 
   var baseOutputFileName = 'elevation'
 
-  const inputFile = fileInput.files[0]
+  const inputFile = fileInput?.files?.item(0)
   if (inputFile != null && inputFile.name.split('.').length > 1) {
     baseOutputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + baseOutputFileName
   }
@@ -340,22 +348,20 @@ function download() {
   chart.resize()
 }
 
-function updateMaximumMinDistance(maxDistance) {
-  const minDistanceInput = document.getElementById('minDistance')
-  minDistanceInput.max = maxDistance
+function updateMaximumMinDistance(maxDistance: number) {
+  minDistanceInput.max = maxDistance.toString()
 }
 
-function updateMinimumMaxDistance(minDistance) {
-  const maxDistanceInput = document.getElementById('maxDistance')
-  maxDistanceInput.min = minDistance
+function updateMinimumMaxDistance(minDistance: number) {
+  maxDistanceInput.min = minDistance.toString()
 }
 
 function retrieveDisplaySettings() {
   return {
-    'min_distance': nullOrNonBlankString(maxDistanceInput.value),
-    'max_distance': nullOrNonBlankString(minDistanceInput.value),
-    'max_altitude': nullOrNonBlankString(maxAltitudeInput.value),
-    'should_fill': nullOrNonBlankString(shouldFillInput.value),
+    'min_distance': maxDistanceInput.value,
+    'max_distance': minDistanceInput.value,
+    'max_altitude': maxAltitudeInput.value,
+    'should_fill': shouldFillInput.value,
   }
 }
 
@@ -387,8 +393,4 @@ function sendDownloadImageEvent() {
       'split_points': splitPoints,
     }
   )
-}
-
-function nullOrNonBlankString(string) {
-  return string == '' ? null : string
 }
