@@ -1,8 +1,6 @@
-interface Data {
-  x: number,
-  y: number
-}
-var data: Data[] = []
+import * as Chart from "chart.js"
+
+var data: Chart.ChartPoint[] = []
 var splitPoints: number[] = []
 var maxDistance: number | null
 var minDistance: number | null
@@ -65,11 +63,14 @@ minDistanceInput?.addEventListener('input', event => {
 
 maxAltitudeInput?.addEventListener('input', event => {
   debounce(({ }) => {
+    if (chart.options.scales?.yAxes?.[0].ticks?.max == undefined) { return }
+
     const parsed = parseFloat((event.target as HTMLInputElement).value)
+
     if (isNaN(parsed)) {
-      chart.options.scales.y.max = null
+      chart.options.scales.yAxes[0].ticks.max = null
     } else {
-      chart.options.scales.y.max = parsed
+      chart.options.scales.yAxes[0].ticks.max = parsed
     }
 
     chart.update()
@@ -86,6 +87,8 @@ function debounce(func: TimerHandler, delay: number) {
 }
 
 shouldFillInput?.addEventListener('input', event => {
+  if (chart.data.datasets?.[0].backgroundColor == undefined) { return }
+
   chart.data.datasets[0].backgroundColor = (event.target as HTMLInputElement).checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
   chart.update()
 
@@ -164,12 +167,12 @@ splitPointsInput?.addEventListener('input', event => {
   updateDownloadButton()
 })
 
-function parseData(content: string): Data[] {
+function parseData(content: string): Chart.ChartPoint[] {
   const doc = parser.parseFromString(content, 'text/xml')
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
 
   return trackpointTags
-    .map(tag => {
+    .map(function(tag): Chart.ChartPoint | null {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
       if (distanceTag?.textContent == null || altitudeTag?.textContent == null) {
@@ -187,7 +190,7 @@ function parseData(content: string): Data[] {
         y: altitude
       }
     })
-    .filter((element): element is Data => {
+    .filter((element): element is Chart.ChartPoint => {
       return element != null
     })
 }
@@ -217,62 +220,78 @@ function croppedData(minDistance: number | null, maxDistance: number | null) {
   return data.slice(minIndex == null ? 0 : minIndex, maxIndex == null ? data.length : maxIndex)
 }
 
-function createChart() {
+interface XScale extends Chart.ChartScales {
+
+}
+
+function createChart(): Chart {
   const ctx = (document.getElementById('chart') as HTMLCanvasElement).getContext('2d');
-  const chartData = {
+  const chartData: Chart.ChartData = {
     datasets: [{
       data: [],
       fill: true,
       backgroundColor: 'rgb(255, 99, 132)',
       borderColor: 'rgb(255, 99, 132)',
+      pointRadius: 0,
+      pointHitRadius: 2,
     }]
   }
-  const options = {
-    scales: {
-      x: {
-        type: 'linear',
-        min: 0,
-        title: {
-          display: true,
-          text: '距離[km]'
-        },
+  const options: Chart.ChartConfiguration = {
+    options: {
+      scales: {
+        xAxes: [{
+          type: 'linear',
+          ticks: {
+            min: 0,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: '距離[km]'
+          },
+        }],
+        yAxes: [{
+          type: 'linear',
+          ticks: {
+            min: 0,
+          },
+          scaleLabel: {
+            display: true,
+            labelString: '標高[m]'
+          },
+        }],
       },
-      y: {
-        type: 'linear',
-        min: 0,
-        title: {
-          display: true,
-          text: '標高[m]'
-        },
-      }
-    },
-    pointRadius: 0,
-    pointHitRadius: 2,
-    plugins: {
-      legend: {
-        display: false,
+      plugins: [{
+        legend: {
+          display: false
+        }
+      }],
+      animation: {
+        onComplete: _ => {
+          updateDownloadButton()
+        }
       },
+      maintainAspectRatio: false,
     },
-    animation: {
-      onComplete: _ => {
-        updateDownloadButton()
-      }
-    },
-    maintainAspectRatio: false,
   }
 
-  return new Chart(ctx, {
+  return new Chart(ctx!, {
     type: 'line',
     data: chartData,
     options: options,
   })
 }
 
-function updateChart(updatedData: Data[], animated = true) {
-  chart.data.datasets[0].data = updatedData
-  chart.options.scales.x.min = updatedData[0].x
-  chart.options.scales.x.max = updatedData[updatedData.length - 1].x
-  chart.update(animated ? null : 'none')
+function updateChart(updatedData: Chart.ChartPoint[], animated = true) {
+  if (chart.data.datasets != undefined) {
+    chart.data.datasets[0].data = updatedData
+  }
+
+  if (chart.options.scales?.xAxes?.[0]?.ticks != undefined) {
+    chart.options.scales.xAxes[0].ticks.min = updatedData[0].x
+    chart.options.scales.xAxes[0].ticks.max = updatedData[updatedData.length - 1].x
+  }
+
+  chart.update(animated ? {} : undefined)
 }
 
 // TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
@@ -280,7 +299,7 @@ function updateDownloadButton() {
   const width = parseInt(exportImageWidthInput.value)
   const height = parseInt(exportImageHeightInput.value)
 
-  const isValidDataShown = chart.data.datasets[0].data.length > 1
+  const isValidDataShown = chart.data.datasets?.[0].data?.length ?? 0 > 1
   const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
   const isValidSplitPoints = splitPointsInput.validity.valid
 
@@ -321,7 +340,7 @@ function download() {
   }
 
   if (splitPoints.length > 0) {
-    const data = chart.data.datasets[0].data
+    const data = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
     var minDistance = data[0].x
     var maxDistance = data[data.length - 1].x
 
