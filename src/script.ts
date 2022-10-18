@@ -172,7 +172,7 @@ function parseData(content: string): Chart.ChartPoint[] {
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
 
   return trackpointTags
-    .map(function(tag): Chart.ChartPoint | null {
+    .map(function (tag): Chart.ChartPoint | null {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
       if (distanceTag?.textContent == null || altitudeTag?.textContent == null) {
@@ -322,7 +322,9 @@ function download() {
   const exportImageWidth = parseInt(exportImageWidthInput.value)
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
-    chart.resize(exportImageWidth, exportImageHeight)
+    chart.width = exportImageWidth
+    chart.height = exportImageHeight
+    chart.resize()
   }
 
   const exportImageFontSize = parseInt(exportImageFontSizeInput.value)
