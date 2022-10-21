@@ -200,7 +200,7 @@ function croppedData(minDistance: number | null, maxDistance: number | null) {
   var maxIndex = null
 
   if (minDistance != null) {
-    minIndex = data.findIndex(e => e.x >= minDistance)
+    minIndex = data.findIndex(point => point.x && point.x >= minDistance)
 
     if (minIndex == -1) {
       minIndex = null
@@ -208,7 +208,7 @@ function croppedData(minDistance: number | null, maxDistance: number | null) {
   }
 
   if (maxDistance != null) {
-    maxIndex = data.findIndex(e => e.x >= maxDistance)
+    maxIndex = data.findIndex(point => point.x && point.x >= maxDistance)
 
     if (maxIndex == -1) {
       maxIndex = null
