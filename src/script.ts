@@ -346,18 +346,20 @@ function download() {
     var minDistance = data[0].x
     var maxDistance = data[data.length - 1].x
 
-    var lower = minDistance
-    splitPoints.concat(maxDistance).forEach(upper => {
-      updateChart(croppedData(lower, upper), false)
+    if (typeof minDistance === 'number' && typeof maxDistance === 'number') {
+      var lower = minDistance
+      splitPoints.concat(maxDistance).forEach(upper => {
+        updateChart(croppedData(lower, upper), false)
 
-      hiddenDownloadLink.href = chart.toBase64Image()
-      hiddenDownloadLink.download = `${baseOutputFileName}-${upper}.png`
-      hiddenDownloadLink.click()
+        hiddenDownloadLink.href = chart.toBase64Image()
+        hiddenDownloadLink.download = `${baseOutputFileName}-${upper}.png`
+        hiddenDownloadLink.click()
 
-      lower = upper
-    })
+        lower = upper
+      })
 
-    updateChart(croppedData(minDistance, maxDistance), false)
+      updateChart(croppedData(minDistance, maxDistance), false)
+    }
   } else {
     hiddenDownloadLink.href = chart.toBase64Image()
     hiddenDownloadLink.download = baseOutputFileName + '.png'
