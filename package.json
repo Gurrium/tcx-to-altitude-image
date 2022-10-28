@@ -1,6 +1,9 @@
 {
   "devDependencies": {
-    "@types/chart.js": "^2.9.37"
+    "@types/chart.js": "^2.9.37",
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "typescript": "^4.8.4"
   },
   "name": "tcx-to-altitude-image",
   "version": "1.0.0",
