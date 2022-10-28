@@ -1,5 +1,25 @@
 {
   "devDependencies": {
     "@types/chart.js": "^2.9.37"
-  }
+  },
+  "name": "tcx-to-altitude-image",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "dependencies": {
+    "moment": "^2.29.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gurrium/tcx-to-altitude-image.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gurrium/tcx-to-altitude-image/issues"
+  },
+  "homepage": "https://github.com/Gurrium/tcx-to-altitude-image#readme",
+  "description": ""
 }
