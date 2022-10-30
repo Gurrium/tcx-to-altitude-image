@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
     "allowJs": true,
     "target": "ES2022",
     "noEmitOnError": true,
