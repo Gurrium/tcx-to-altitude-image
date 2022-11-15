@@ -63,15 +63,11 @@ minDistanceInput?.addEventListener('input', event => {
 
 maxAltitudeInput?.addEventListener('input', event => {
   debounce(({ }) => {
-    if (chart.options.scales?.yAxes?.[0].ticks?.max == undefined) { return }
-
     const parsed = parseFloat((event.target as HTMLInputElement).value)
 
-    if (isNaN(parsed)) {
-      chart.options.scales.yAxes[0].ticks.max = null
-    } else {
-      chart.options.scales.yAxes[0].ticks.max = parsed
-    }
+    if (chart.options.scales?.['yAxes']?.max == undefined || isNaN(parsed)) { return }
+
+    chart.options.scales['yAxes'].max = parsed
 
     chart.update()
 
@@ -286,9 +282,11 @@ function updateChart(updatedData: Chart.ChartPoint[], animated = true) {
     chart.data.datasets[0].data = updatedData
   }
 
-  if (chart.options.scales?.xAxes?.[0]?.ticks != undefined) {
-    chart.options.scales.xAxes[0].ticks.min = updatedData[0].x
-    chart.options.scales.xAxes[0].ticks.max = updatedData[updatedData.length - 1].x
+  if (chart.options.scales?.['xAxes'] != undefined
+   && chart.options.scales?.['xAxes'].min != undefined
+    && chart.options.scales?.['xAxes'].max != undefined) {
+    chart.options.scales['xAxes'].min = updatedData[0].x
+    chart.options.scales['xAxes'].max = updatedData[updatedData.length - 1].x
   }
 
   chart.update(animated ? {} : undefined)
