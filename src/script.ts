@@ -1,4 +1,4 @@
-import Chart from 'chart.js/auto';
+import Chart, { ChartOptions } from 'chart.js/auto';
 
 var data: Chart.ChartPoint[] = []
 var splitPoints: number[] = []
@@ -221,59 +221,51 @@ interface XScale extends Chart.ChartScales {
 }
 
 function createChart(): Chart {
-  const ctx = (document.getElementById('chart') as HTMLCanvasElement).getContext('2d');
-  const chartData: Chart.ChartData = {
-    datasets: [{
-      data: [],
-      fill: true,
-      backgroundColor: 'rgb(255, 99, 132)',
-      borderColor: 'rgb(255, 99, 132)',
-      pointRadius: 0,
-      pointHitRadius: 2,
-    }]
-  }
-  const options: Chart.ChartConfiguration = {
+  const ctx = (document.getElementById('chart') as HTMLCanvasElement).getContext('2d')
+
+  return new Chart(ctx!, {
+    type: 'line',
+    data: {
+      datasets: [{
+        data: [],
+        fill: true,
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        pointRadius: 0,
+        pointHitRadius: 2,
+      }]
+    },
     options: {
       scales: {
-        xAxes: [{
+        x: {
           type: 'linear',
-          ticks: {
-            min: 0,
-          },
-          scaleLabel: {
+          min: 0,
+          title: {
             display: true,
-            labelString: '距離[km]'
+            text: '距離[km]'
           },
-        }],
-        yAxes: [{
+        },
+        y: {
           type: 'linear',
-          ticks: {
-            min: 0,
-          },
-          scaleLabel: {
+          min: 0,
+          title: {
             display: true,
-            labelString: '標高[m]'
+            text: '標高[m]'
           },
-        }],
+        },
       },
-      plugins: [{
+      plugins: {
         legend: {
-          display: false
-        }
-      }],
+          display: false,
+        },
+      },
       animation: {
-        onComplete: _ => {
+        onComplete: () => {
           updateDownloadButton()
         }
       },
       maintainAspectRatio: false,
-    },
-  }
-
-  return new Chart(ctx!, {
-    type: 'line',
-    data: chartData,
-    options: options,
+    }
   })
 }
 
@@ -283,7 +275,7 @@ function updateChart(updatedData: Chart.ChartPoint[], animated = true) {
   }
 
   if (chart.options.scales?.['xAxes'] != undefined
-   && chart.options.scales?.['xAxes'].min != undefined
+    && chart.options.scales?.['xAxes'].min != undefined
     && chart.options.scales?.['xAxes'].max != undefined) {
     chart.options.scales['xAxes'].min = updatedData[0].x
     chart.options.scales['xAxes'].max = updatedData[updatedData.length - 1].x
