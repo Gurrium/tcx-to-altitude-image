@@ -1,6 +1,11 @@
 import Chart, { ChartOptions } from 'chart.js/auto';
 
-var data: Chart.ChartPoint[] = []
+interface CoursePoint {
+  x: number
+  y: number
+}
+
+var data = new Array<CoursePoint>
 var splitPoints: number[] = []
 var maxDistance: number | null
 var minDistance: number | null
@@ -163,12 +168,12 @@ splitPointsInput?.addEventListener('input', event => {
   updateDownloadButton()
 })
 
-function parseData(content: string): Chart.ChartPoint[] {
+function parseData(content: string): CoursePoint[] {
   const doc = parser.parseFromString(content, 'text/xml')
   const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
 
   return trackpointTags
-    .map(function (tag): Chart.ChartPoint | null {
+    .map(function (tag): CoursePoint | null {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
       if (distanceTag?.textContent == null || altitudeTag?.textContent == null) {
@@ -186,12 +191,12 @@ function parseData(content: string): Chart.ChartPoint[] {
         y: altitude
       }
     })
-    .filter((element): element is Chart.ChartPoint => {
+    .filter((element): element is CoursePoint => {
       return element != null
     })
 }
 
-function croppedData(minDistance: number | null, maxDistance: number | null) {
+function croppedData(minDistance: number | null, maxDistance: number | null): CoursePoint[] {
   var minIndex = null
   var maxIndex = null
 
@@ -227,7 +232,7 @@ function createChart(): Chart {
     type: 'line',
     data: {
       datasets: [{
-        data: [],
+        data: new Array<CoursePoint>,
         fill: true,
         backgroundColor: 'rgb(255, 99, 132)',
         borderColor: 'rgb(255, 99, 132)',
@@ -269,7 +274,7 @@ function createChart(): Chart {
   })
 }
 
-function updateChart(updatedData: Chart.ChartPoint[], animated = true) {
+function updateChart(updatedData: CoursePoint[], animated = true) {
   if (chart.data.datasets != undefined) {
     chart.data.datasets[0].data = updatedData
   }
@@ -281,7 +286,7 @@ function updateChart(updatedData: Chart.ChartPoint[], animated = true) {
     chart.options.scales['xAxes'].max = updatedData[updatedData.length - 1].x
   }
 
-  chart.update(animated ? {} : undefined)
+  chart.update(animated ? 'none' : undefined)
 }
 
 // TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
