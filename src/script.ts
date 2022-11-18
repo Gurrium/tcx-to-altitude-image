@@ -317,9 +317,8 @@ function download() {
   const exportImageWidth = parseInt(exportImageWidthInput.value)
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
-    chart.width = exportImageWidth
-    chart.height = exportImageHeight
-    chart.resize()
+    
+    chart.resize(exportImageWidth, exportImageHeight)
   }
 
   const exportImageFontSize = parseInt(exportImageFontSizeInput.value)
