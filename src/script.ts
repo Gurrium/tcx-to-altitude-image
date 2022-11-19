@@ -325,7 +325,7 @@ function download() {
   const defaultFontSize = Chart.defaults.font.size
   if (!isNaN(exportImageFontSize)) {
     Chart.defaults.font.size = exportImageFontSize
-    chart.update({ duration: 0 })
+    chart.update('none')
   }
 
   var baseOutputFileName = 'elevation'
@@ -361,7 +361,7 @@ function download() {
   }
 
   Chart.defaults.font.size = defaultFontSize
-  chart.update({ duration: 0 }) // TODO: {}でもいいかも
+  chart.update('none')
   chart.resize()
 }
 
