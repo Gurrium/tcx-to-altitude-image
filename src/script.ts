@@ -1,4 +1,4 @@
-import Chart, { ChartOptions } from 'chart.js/auto';
+import Chart from 'chart.js/auto';
 
 interface CoursePoint {
   x: number
@@ -219,10 +219,6 @@ function croppedData(minDistance: number | null, maxDistance: number | null): Co
   }
 
   return data.slice(minIndex == null ? 0 : minIndex, maxIndex == null ? data.length : maxIndex)
-}
-
-interface XScale extends Chart.ChartScales {
-
 }
 
 function createChart(): Chart {
