@@ -170,9 +170,15 @@ splitPointsInput?.addEventListener('input', event => {
 
 function parseData(content: string): CoursePoint[] {
   const doc = parser.parseFromString(content, 'text/xml')
-  const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
+  var trackpoints = new Array<Element>
 
-  return trackpointTags
+  const trackpointTags = doc.getElementsByTagName('Trackpoint')
+
+  for (let i = 0;i < trackpointTags.length;i++) {
+    trackpoints.push(trackpointTags[i])
+  }
+
+  return trackpoints
     .map(function (tag): CoursePoint | null {
       const distanceTag = tag.querySelector('DistanceMeters')
       const altitudeTag = tag.querySelector('AltitudeMeters')
@@ -201,7 +207,14 @@ function croppedData(minDistance: number | null, maxDistance: number | null): Co
   var maxIndex = null
 
   if (minDistance != null) {
-    minIndex = data.findIndex(point => point.x && point.x >= minDistance)
+    for (let i = 0;i < data.length;i++) {
+      const point = data[i]
+      
+      if (point.x && point.x >= minDistance) {
+        minIndex = i
+        break
+      }
+    }
 
     if (minIndex == -1) {
       minIndex = null
@@ -209,16 +222,17 @@ function croppedData(minDistance: number | null, maxDistance: number | null): Co
   }
 
   if (maxDistance != null) {
-    maxIndex = data.findIndex(point => point.x && point.x >= maxDistance)
-
-    if (maxIndex == -1) {
-      maxIndex = null
-    } else {
-      maxIndex += 1
+    for (let i = 0;i < data.length;i++) {
+      const point = data[i]
+      
+      if (point.x && point.x >= maxDistance) {
+        maxIndex = i
+        break
+      }
     }
   }
 
-  return data.slice(minIndex == null ? 0 : minIndex, maxIndex == null ? data.length : maxIndex)
+  return data.slice(minIndex == null ? 0 : minIndex, maxIndex == null ? data.length : maxIndex + 1)
 }
 
 function createChart(): Chart {
