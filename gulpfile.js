@@ -9,7 +9,7 @@ var tsify = require("tsify");
 var watchify = require("watchify");
 
 var paths = {
-  pages: ["src/*.html"],
+  pages: ["src/*.html", "src/*.css"],
 };
 
 var watchedBrowserify = watchify(
