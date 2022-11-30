@@ -35,7 +35,7 @@ fileInput?.addEventListener('change', (event: InputEvent) => {
 })
 
 maxDistanceInput?.addEventListener('input', event => {
-  debounce(({ }) => {
+  debounce(() => {
     const parsed = parseFloat((event.target as HTMLInputElement).value)
     if (isNaN(parsed)) {
       maxDistance = null
@@ -51,7 +51,7 @@ maxDistanceInput?.addEventListener('input', event => {
 })
 
 minDistanceInput?.addEventListener('input', event => {
-  debounce(({ }) => {
+  debounce(() => {
     const parsed = parseFloat((event.target as HTMLInputElement).value)
     if (isNaN(parsed)) {
       minDistance = null
@@ -67,7 +67,7 @@ minDistanceInput?.addEventListener('input', event => {
 })
 
 maxAltitudeInput?.addEventListener('input', event => {
-  debounce(({ }) => {
+  debounce(() => {
     const parsed = parseFloat((event.target as HTMLInputElement).value)
 
     if (chart.options.scales?.['yAxes']?.max == undefined || isNaN(parsed)) { return }
