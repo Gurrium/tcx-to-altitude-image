@@ -275,14 +275,12 @@ function updateChart(updatedData: CoursePoint[], animated = true) {
     chart.data.datasets[0].data = updatedData
   }
 
-  if (chart.options.scales?.['xAxes'] != undefined
-    && chart.options.scales?.['xAxes'].min != undefined
-    && chart.options.scales?.['xAxes'].max != undefined) {
-    chart.options.scales['xAxes'].min = updatedData[0].x
-    chart.options.scales['xAxes'].max = updatedData[updatedData.length - 1].x
+  if (chart.options.scales?.['x'] != undefined) {
+    chart.options.scales['x'].min = updatedData[0].x
+    chart.options.scales['x'].max = updatedData[updatedData.length - 1].x
   }
 
-  chart.update(animated ? 'none' : undefined)
+  chart.update(animated ? undefined : 'none')
 }
 
 // TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
