@@ -68,11 +68,19 @@ minDistanceInput?.addEventListener('input', event => {
 
 maxAltitudeInput?.addEventListener('input', event => {
   debounce(() => {
-    const parsed = parseFloat((event.target as HTMLInputElement).value)
+    var parsed = parseFloat((event.target as HTMLInputElement).value)
 
-    if (chart.options.scales?.['yAxes']?.max == undefined || isNaN(parsed)) { return }
+    if (chart.options.scales?.['y'] == undefined) { return }
 
-    chart.options.scales['yAxes'].max = parsed
+    if (isNaN(parsed)) {
+      const altitudes = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
+        .map(point => point.y)
+        .filter((e): e is number => e != null)
+      const max = Math.max(...altitudes)
+      parsed = (Math.floor(max / 100) + 1) * 100
+    }
+
+    chart.options.scales['y'].max = parsed
 
     chart.update()
 
@@ -311,7 +319,7 @@ function download() {
   const exportImageWidth = parseInt(exportImageWidthInput.value)
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
-    
+
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
