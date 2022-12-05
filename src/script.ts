@@ -44,7 +44,7 @@ maxDistanceInput?.addEventListener('input', event => {
       updateMaximumMinDistance(maxDistance)
     }
 
-    updateChart(croppedData(minDistance, maxDistance))
+    updateDistance()
 
     sendChangeChartSettingsEvent()
   }, 500)
@@ -60,17 +60,19 @@ minDistanceInput?.addEventListener('input', event => {
       updateMinimumMaxDistance(minDistance)
     }
 
-    updateChart(croppedData(minDistance, maxDistance))
+    updateDistance()
 
     sendChangeChartSettingsEvent()
   }, 500)
 })
 
+function updateDistance()  {
+  updateChart(croppedData(minDistance, maxDistance))
+}
+
 maxAltitudeInput?.addEventListener('input', event => {
   debounce(() => {
     var parsed = parseFloat((event.target as HTMLInputElement).value)
-
-    if (chart.options.scales?.['y'] == undefined) { return }
 
     if (isNaN(parsed)) {
       const altitudes = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
@@ -80,13 +82,18 @@ maxAltitudeInput?.addEventListener('input', event => {
       parsed = (Math.floor(max / 100) + 1) * 100
     }
 
-    chart.options.scales['y'].max = parsed
-
-    chart.update()
+    updateAltitude(parsed)
 
     sendChangeChartSettingsEvent()
   }, 500)
 })
+
+function updateAltitude(altitude: number) {
+  if (chart.options.scales?.['y'] == undefined) { return }
+
+  chart.options.scales['y'].max = altitude
+  chart.update()
+}
 
 var timerID: number
 function debounce(func: TimerHandler, delay: number) {
@@ -374,6 +381,8 @@ function updateMaximumMinDistance(maxDistance: number) {
 function updateMinimumMaxDistance(minDistance: number) {
   maxDistanceInput.min = minDistance.toString()
 }
+
+// Google Tag Manager
 
 function retrieveDisplaySettings() {
   return {
