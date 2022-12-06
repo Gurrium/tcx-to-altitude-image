@@ -7,8 +7,6 @@ interface CoursePoint {
 
 var data = new Array<CoursePoint>
 var splitPoints: number[] = []
-var maxDistance: number | null
-var minDistance: number | null
 
 const parser = new DOMParser()
 const chart = createChart()
@@ -36,63 +34,63 @@ fileInput?.addEventListener('change', (event: InputEvent) => {
 
 maxDistanceInput?.addEventListener('input', event => {
   debounce(() => {
-    const parsed = parseFloat((event.target as HTMLInputElement).value)
-    if (isNaN(parsed)) {
-      maxDistance = null
-    } else {
-      maxDistance = parsed
-      updateMaximumMinDistance(maxDistance)
-    }
-
+    // TODO: check validity
+    // TODO: update altitude
+    updateMaximumMinDistance()
     updateDistance()
-
     sendChangeChartSettingsEvent()
   }, 500)
 })
 
 minDistanceInput?.addEventListener('input', event => {
   debounce(() => {
-    const parsed = parseFloat((event.target as HTMLInputElement).value)
-    if (isNaN(parsed)) {
-      minDistance = null
-    } else {
-      minDistance = parsed
-      updateMinimumMaxDistance(minDistance)
-    }
-
+    // TODO: check validity
+    // TODO: update altitude
+    updateMinimumMaxDistance()
     updateDistance()
-
     sendChangeChartSettingsEvent()
   }, 500)
 })
 
-function updateDistance()  {
-  updateChart(croppedData(minDistance, maxDistance))
+function getMinDistance(): number | null {
+  return parseFloat(minDistanceInput.value)
+}
+
+function getMaxDistance(): number | null {
+  return parseFloat(maxDistanceInput.value)
+}
+
+function updateDistance() {
+  updateChart(croppedData(getMinDistance(), getMaxDistance()))
 }
 
 maxAltitudeInput?.addEventListener('input', event => {
   debounce(() => {
-    var parsed = parseFloat((event.target as HTMLInputElement).value)
-
-    if (isNaN(parsed)) {
-      const altitudes = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
-        .map(point => point.y)
-        .filter((e): e is number => e != null)
-      const max = Math.max(...altitudes)
-      parsed = (Math.floor(max / 100) + 1) * 100
-    }
-
-    updateAltitude(parsed)
-
+    updateAltitude()
     sendChangeChartSettingsEvent()
   }, 500)
 })
 
-function updateAltitude(altitude: number) {
-  if (chart.options.scales?.['y'] == undefined) { return }
+function getMaxAltitude(): number | null {
+  return parseFloat(maxAltitudeInput.value)
+}
 
-  chart.options.scales['y'].max = altitude
-  chart.update()
+function updateAltitude() {
+  var maxAltitude = getMaxAltitude()
+
+  if (maxAltitude == null || isNaN(maxAltitude)) {
+    const altitudes = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
+      .map(point => point.y)
+      .filter((e): e is number => e != null)
+    const max = Math.max(...altitudes)
+    maxAltitude = (Math.floor(max / 100) + 1) * 100
+  }
+  
+  if (chart.options.scales?.['y'] != undefined) {
+    chart.options.scales['y'].max = maxAltitude
+
+    chart.update()
+  }
 }
 
 var timerID: number
@@ -374,12 +372,20 @@ function download() {
   chart.resize()
 }
 
-function updateMaximumMinDistance(maxDistance: number) {
-  minDistanceInput.max = maxDistance.toString()
+function updateMaximumMinDistance() {
+  const maxDistance = getMaxDistance()
+
+  if (maxDistance) {
+    minDistanceInput.max = maxDistance.toString()
+  }
 }
 
-function updateMinimumMaxDistance(minDistance: number) {
-  maxDistanceInput.min = minDistance.toString()
+function updateMinimumMaxDistance() {
+  const minDistance = getMinDistance()
+
+  if (minDistance) {
+    maxDistanceInput.min = minDistance.toString()
+  }
 }
 
 // Google Tag Manager
