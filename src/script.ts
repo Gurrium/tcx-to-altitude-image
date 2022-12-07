@@ -32,20 +32,18 @@ fileInput?.addEventListener('change', (event: InputEvent) => {
   sendLoadFileEvent()
 })
 
-maxDistanceInput?.addEventListener('input', event => {
+maxDistanceInput?.addEventListener('input', () => {
   debounce(() => {
     // TODO: check validity
-    // TODO: update altitude
     updateMaximumMinDistance()
     updateDistance()
     sendChangeChartSettingsEvent()
   }, 500)
 })
 
-minDistanceInput?.addEventListener('input', event => {
+minDistanceInput?.addEventListener('input', () => {
   debounce(() => {
     // TODO: check validity
-    // TODO: update altitude
     updateMinimumMaxDistance()
     updateDistance()
     sendChangeChartSettingsEvent()
@@ -64,7 +62,7 @@ function updateDistance() {
   updateChart(croppedData(getMinDistance(), getMaxDistance()))
 }
 
-maxAltitudeInput?.addEventListener('input', event => {
+maxAltitudeInput?.addEventListener('input', () => {
   debounce(() => {
     updateAltitude()
     sendChangeChartSettingsEvent()
