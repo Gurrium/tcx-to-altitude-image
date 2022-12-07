@@ -151,15 +151,15 @@ splitPointsInput?.addEventListener('input', event => {
       })
       .filter((e): e is number => e != null)
 
-    const minDistance = parseFloat(minDistanceInput?.value)
-    const maxDistance = parseFloat(maxDistanceInput?.value)
+    const minDistance = getMinDistance()
+    const maxDistance = getMaxDistance()
     var prev = 0
     rawSplitPoints.forEach(current => {
       if (prev >= current) {
         validityMessages.push("昇順に指定してください")
       }
 
-      if (current < minDistance || maxDistance < current) {
+      if (minDistance && maxDistance && (current < minDistance || maxDistance < current)) {
         validityMessages.push("表示されている範囲で指定してください")
       }
 
@@ -390,8 +390,8 @@ function updateMinimumMaxDistance() {
 
 function retrieveDisplaySettings() {
   return {
-    'min_distance': maxDistanceInput.value,
-    'max_distance': minDistanceInput.value,
+    'min_distance': getMinDistance(),
+    'max_distance': getMaxDistance(),
     'max_altitude': maxAltitudeInput.value,
     'should_fill': shouldFillInput.value,
   }
