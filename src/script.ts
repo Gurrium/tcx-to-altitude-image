@@ -32,21 +32,23 @@ fileInput?.addEventListener('change', (event: InputEvent) => {
   sendLoadFileEvent()
 })
 
-maxDistanceInput?.addEventListener('input', () => {
+maxDistanceInput?.addEventListener('input', event => {
   debounce(() => {
-    // TODO: check validity
-    updateMaximumMinDistance()
-    updateDistance()
-    sendChangeChartSettingsEvent()
+    if ((event.target as HTMLInputElement)?.validity.valid) {
+      updateMaximumMinDistance()
+      updateDistance()
+      sendChangeChartSettingsEvent()
+    }
   }, 500)
 })
 
-minDistanceInput?.addEventListener('input', () => {
+minDistanceInput?.addEventListener('input', event => {
   debounce(() => {
-    // TODO: check validity
-    updateMinimumMaxDistance()
-    updateDistance()
-    sendChangeChartSettingsEvent()
+    if ((event.target as HTMLInputElement)?.validity.valid) {
+      updateMinimumMaxDistance()
+      updateDistance()
+      sendChangeChartSettingsEvent()
+    }
   }, 500)
 })
 
@@ -83,7 +85,7 @@ function updateAltitude() {
     const max = Math.max(...altitudes)
     maxAltitude = (Math.floor(max / 100) + 1) * 100
   }
-  
+
   if (chart.options.scales?.['y'] != undefined) {
     chart.options.scales['y'].max = maxAltitude
 
