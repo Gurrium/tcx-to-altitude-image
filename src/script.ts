@@ -1,38 +1,61 @@
-import { Chart } from 'chart.js/auto';
+import { Chart } from "chart.js/auto"
 
 interface CoursePoint {
   x: number
   y: number
 }
 
-var data = new Array<CoursePoint>
+var data = new Array<CoursePoint>()
 var splitPoints: number[] = []
 
 const parser = new DOMParser()
 const chart = createChart()
-const fileInput = document.getElementById('route-file') as HTMLInputElement
-const downloadButton = document.getElementById('download-button') as HTMLButtonElement
-const hiddenDownloadLink = document.getElementById('hidden-download-link') as HTMLAnchorElement
-const exportImageWidthInput = document.getElementById('exportImageWidth') as HTMLInputElement
-const exportImageHeightInput = document.getElementById('exportImageHeight') as HTMLInputElement
-const splitPointsInput = document.getElementById('splitPoints') as HTMLInputElement
-const exportImageFontSizeInput = document.getElementById('exportImageFontSize') as HTMLInputElement
-const maxDistanceInput = document.getElementById('maxDistance') as HTMLInputElement
-const minDistanceInput = document.getElementById('minDistance') as HTMLInputElement
-const maxAltitudeInput = document.getElementById('maxAltitude') as HTMLInputElement
-const shouldFillInput = document.getElementById('shouldFill') as HTMLInputElement
+const fileInput = document.getElementById("route-file") as HTMLInputElement
+const downloadButton = document.getElementById(
+  "download-button"
+) as HTMLButtonElement
+const hiddenDownloadLink = document.getElementById(
+  "hidden-download-link"
+) as HTMLAnchorElement
+const exportImageWidthInput = document.getElementById(
+  "exportImageWidth"
+) as HTMLInputElement
+const exportImageHeightInput = document.getElementById(
+  "exportImageHeight"
+) as HTMLInputElement
+const splitPointsInput = document.getElementById(
+  "splitPoints"
+) as HTMLInputElement
+const exportImageFontSizeInput = document.getElementById(
+  "exportImageFontSize"
+) as HTMLInputElement
+const maxDistanceInput = document.getElementById(
+  "maxDistance"
+) as HTMLInputElement
+const minDistanceInput = document.getElementById(
+  "minDistance"
+) as HTMLInputElement
+const maxAltitudeInput = document.getElementById(
+  "maxAltitude"
+) as HTMLInputElement
+const shouldFillInput = document.getElementById(
+  "shouldFill"
+) as HTMLInputElement
 
-fileInput?.addEventListener('change', (event: InputEvent) => {
-  const fileList = (event?.target as HTMLInputElement).files;
-  fileList?.item(0)?.text().then(content => {
-    data = parseData(content)
-    updateChart(data)
-  })
+fileInput?.addEventListener("change", (event: InputEvent) => {
+  const fileList = (event?.target as HTMLInputElement).files
+  fileList
+    ?.item(0)
+    ?.text()
+    .then(content => {
+      data = parseData(content)
+      updateChart(data)
+    })
 
   sendLoadFileEvent()
 })
 
-maxDistanceInput?.addEventListener('input', event => {
+maxDistanceInput?.addEventListener("input", event => {
   debounce(() => {
     if ((event.target as HTMLInputElement)?.validity.valid) {
       updateMaximumMinDistance()
@@ -42,7 +65,7 @@ maxDistanceInput?.addEventListener('input', event => {
   }, 500)
 })
 
-minDistanceInput?.addEventListener('input', event => {
+minDistanceInput?.addEventListener("input", event => {
   debounce(() => {
     if ((event.target as HTMLInputElement)?.validity.valid) {
       updateMinimumMaxDistance()
@@ -64,7 +87,7 @@ function updateDistance() {
   updateChart(croppedData(getMinDistance(), getMaxDistance()))
 }
 
-maxAltitudeInput?.addEventListener('input', () => {
+maxAltitudeInput?.addEventListener("input", () => {
   debounce(() => {
     updateAltitude()
     sendChangeChartSettingsEvent()
@@ -86,8 +109,8 @@ function updateAltitude() {
     maxAltitude = (Math.floor(max / 100) + 1) * 100
   }
 
-  if (chart.options.scales?.['y'] != undefined) {
-    chart.options.scales['y'].max = maxAltitude
+  if (chart.options.scales?.["y"] != undefined) {
+    chart.options.scales["y"].max = maxAltitude
 
     chart.update()
   }
@@ -100,16 +123,21 @@ function debounce(func: TimerHandler, delay: number) {
   timerID = setTimeout(func, delay)
 }
 
-shouldFillInput?.addEventListener('input', event => {
-  if (chart.data.datasets?.[0].backgroundColor == undefined) { return }
+shouldFillInput?.addEventListener("input", event => {
+  if (chart.data.datasets?.[0].backgroundColor == undefined) {
+    return
+  }
 
-  chart.data.datasets[0].backgroundColor = (event.target as HTMLInputElement).checked ? 'rgb(255, 99, 132)' : 'rgba(0, 0, 0, 0)'
+  chart.data.datasets[0].backgroundColor = (event.target as HTMLInputElement)
+    .checked
+    ? "rgb(255, 99, 132)"
+    : "rgba(0, 0, 0, 0)"
   chart.update()
 
   sendChangeChartSettingsEvent()
 })
 
-downloadButton?.addEventListener('click', e => {
+downloadButton?.addEventListener("click", e => {
   download()
 
   sendDownloadImageEvent()
@@ -117,35 +145,36 @@ downloadButton?.addEventListener('click', e => {
   e.preventDefault()
 })
 
-exportImageWidthInput?.addEventListener('input', event => {
+exportImageWidthInput?.addEventListener("input", event => {
   updateDownloadButton()
 
-  if ((event.target as HTMLInputElement).value == '') {
-    exportImageHeightInput?.removeAttribute('required')
+  if ((event.target as HTMLInputElement).value == "") {
+    exportImageHeightInput?.removeAttribute("required")
   } else {
-    exportImageHeightInput?.setAttribute('required', '')
+    exportImageHeightInput?.setAttribute("required", "")
   }
 })
 
-exportImageHeightInput?.addEventListener('input', event => {
+exportImageHeightInput?.addEventListener("input", event => {
   updateDownloadButton()
 
-  if ((event.target as HTMLInputElement).value == '') {
-    exportImageWidthInput?.removeAttribute('required')
+  if ((event.target as HTMLInputElement).value == "") {
+    exportImageWidthInput?.removeAttribute("required")
   } else {
-    exportImageWidthInput?.setAttribute('required', '')
+    exportImageWidthInput?.setAttribute("required", "")
   }
 })
 
-splitPointsInput?.addEventListener('input', event => {
-  const target = (event.target as HTMLInputElement)
+splitPointsInput?.addEventListener("input", event => {
+  const target = event.target as HTMLInputElement
   var validityMessages: string[] = []
   var rawSplitPoints: number[] = []
 
   if (target.validity.patternMismatch) {
-    validityMessages.push('カンマ（,）区切りの半角数字で入力してください')
+    validityMessages.push("カンマ（,）区切りの半角数字で入力してください")
   } else {
-    rawSplitPoints = target.value.split(',')
+    rawSplitPoints = target.value
+      .split(",")
       .map(s => {
         const point = parseFloat(s)
 
@@ -161,7 +190,11 @@ splitPointsInput?.addEventListener('input', event => {
         validityMessages.push("昇順に指定してください")
       }
 
-      if (minDistance && maxDistance && (current < minDistance || maxDistance < current)) {
+      if (
+        minDistance &&
+        maxDistance &&
+        (current < minDistance || maxDistance < current)
+      ) {
         validityMessages.push("表示されている範囲で指定してください")
       }
 
@@ -170,7 +203,7 @@ splitPointsInput?.addEventListener('input', event => {
   }
 
   if (validityMessages.length == 0) {
-    target.setCustomValidity('')
+    target.setCustomValidity("")
 
     splitPoints = rawSplitPoints
   } else {
@@ -182,14 +215,17 @@ splitPointsInput?.addEventListener('input', event => {
 })
 
 function parseData(content: string): CoursePoint[] {
-  const doc = parser.parseFromString(content, 'text/xml')
-  const trackpointTags = [...doc.getElementsByTagName('Trackpoint')]
+  const doc = parser.parseFromString(content, "text/xml")
+  const trackpointTags = [...doc.getElementsByTagName("Trackpoint")]
 
   return trackpointTags
     .map(function (tag): CoursePoint | null {
-      const distanceTag = tag.querySelector('DistanceMeters')
-      const altitudeTag = tag.querySelector('AltitudeMeters')
-      if (distanceTag?.textContent == null || altitudeTag?.textContent == null) {
+      const distanceTag = tag.querySelector("DistanceMeters")
+      const altitudeTag = tag.querySelector("AltitudeMeters")
+      if (
+        distanceTag?.textContent == null ||
+        altitudeTag?.textContent == null
+      ) {
         return null
       }
 
@@ -201,7 +237,7 @@ function parseData(content: string): CoursePoint[] {
 
       return {
         x: distance / 1000,
-        y: altitude
+        y: altitude,
       }
     })
     .filter((element): element is CoursePoint => {
@@ -209,7 +245,10 @@ function parseData(content: string): CoursePoint[] {
     })
 }
 
-function croppedData(minDistance: number | null, maxDistance: number | null): CoursePoint[] {
+function croppedData(
+  minDistance: number | null,
+  maxDistance: number | null
+): CoursePoint[] {
   var minIndex = null
   var maxIndex = null
 
@@ -231,40 +270,47 @@ function croppedData(minDistance: number | null, maxDistance: number | null): Co
     }
   }
 
-  return data.slice(minIndex == null ? 0 : minIndex, maxIndex == null ? data.length : maxIndex)
+  return data.slice(
+    minIndex == null ? 0 : minIndex,
+    maxIndex == null ? data.length : maxIndex
+  )
 }
 
 function createChart(): Chart {
-  const ctx = (document.getElementById('chart') as HTMLCanvasElement).getContext('2d')
+  const ctx = (
+    document.getElementById("chart") as HTMLCanvasElement
+  ).getContext("2d")
 
   return new Chart(ctx!, {
-    type: 'line',
+    type: "line",
     data: {
-      datasets: [{
-        data: new Array<CoursePoint>,
-        fill: true,
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        pointRadius: 0,
-        pointHitRadius: 2,
-      }]
+      datasets: [
+        {
+          data: new Array<CoursePoint>(),
+          fill: true,
+          backgroundColor: "rgb(255, 99, 132)",
+          borderColor: "rgb(255, 99, 132)",
+          pointRadius: 0,
+          pointHitRadius: 2,
+        },
+      ],
     },
     options: {
       scales: {
         x: {
-          type: 'linear',
+          type: "linear",
           min: 0,
           title: {
             display: true,
-            text: '距離[km]'
+            text: "距離[km]",
           },
         },
         y: {
-          type: 'linear',
+          type: "linear",
           min: 0,
           title: {
             display: true,
-            text: '標高[m]'
+            text: "標高[m]",
           },
         },
       },
@@ -276,10 +322,10 @@ function createChart(): Chart {
       animation: {
         onComplete: () => {
           updateDownloadButton()
-        }
+        },
       },
       maintainAspectRatio: false,
-    }
+    },
   })
 }
 
@@ -288,12 +334,12 @@ function updateChart(updatedData: CoursePoint[], animated = true) {
     chart.data.datasets[0].data = updatedData
   }
 
-  if (chart.options.scales?.['x'] != undefined) {
-    chart.options.scales['x'].min = updatedData[0].x
-    chart.options.scales['x'].max = updatedData[updatedData.length - 1].x
+  if (chart.options.scales?.["x"] != undefined) {
+    chart.options.scales["x"].min = updatedData[0].x
+    chart.options.scales["x"].max = updatedData[updatedData.length - 1].x
   }
 
-  chart.update(animated ? undefined : 'none')
+  chart.update(animated ? undefined : "none")
 }
 
 // TODO: それぞれのevent listenerでvalidityを更新するほうが健全だと思う
@@ -302,7 +348,8 @@ function updateDownloadButton() {
   const height = parseInt(exportImageHeightInput.value)
 
   const isValidDataShown = chart.data.datasets?.[0].data?.length ?? 0 > 1
-  const isValidSizeInput = (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
+  const isValidSizeInput =
+    (isNaN(width) && isNaN(height)) || (!isNaN(width) && !isNaN(height))
   const isValidSplitPoints = splitPointsInput.validity.valid
 
   if (isValidSizeInput && isValidDataShown && isValidSplitPoints) {
@@ -324,7 +371,6 @@ function download() {
   const exportImageWidth = parseInt(exportImageWidthInput.value)
   const exportImageHeight = parseInt(exportImageHeightInput.value)
   if (!isNaN(exportImageWidth) && !isNaN(exportImageHeight)) {
-
     chart.resize(exportImageWidth, exportImageHeight)
   }
 
@@ -332,22 +378,23 @@ function download() {
   const defaultFontSize = Chart.defaults.font.size
   if (!isNaN(exportImageFontSize)) {
     Chart.defaults.font.size = exportImageFontSize
-    chart.update('none')
+    chart.update("none")
   }
 
-  var baseOutputFileName = 'elevation'
+  var baseOutputFileName = "elevation"
 
   const inputFile = fileInput?.files?.item(0)
-  if (inputFile != null && inputFile.name.split('.').length > 1) {
-    baseOutputFileName = inputFile.name.split('.').slice(0, -1).join() + '-' + baseOutputFileName
+  if (inputFile != null && inputFile.name.split(".").length > 1) {
+    baseOutputFileName =
+      inputFile.name.split(".").slice(0, -1).join() + "-" + baseOutputFileName
   }
 
   if (splitPoints.length > 0) {
-    const data = (chart.data.datasets?.[0].data as Chart.ChartPoint[])
+    const data = chart.data.datasets?.[0].data as Chart.ChartPoint[]
     var minDistance = data[0].x
     var maxDistance = data[data.length - 1].x
 
-    if (typeof minDistance === 'number' && typeof maxDistance === 'number') {
+    if (typeof minDistance === "number" && typeof maxDistance === "number") {
       var lower = minDistance
       splitPoints.concat(maxDistance).forEach(upper => {
         updateChart(croppedData(lower, upper), false)
@@ -363,12 +410,12 @@ function download() {
     }
   } else {
     hiddenDownloadLink.href = chart.toBase64Image()
-    hiddenDownloadLink.download = baseOutputFileName + '.png'
+    hiddenDownloadLink.download = baseOutputFileName + ".png"
     hiddenDownloadLink.click()
   }
 
   Chart.defaults.font.size = defaultFontSize
-  chart.update('none')
+  chart.update("none")
   chart.resize()
 }
 
@@ -392,39 +439,33 @@ function updateMinimumMaxDistance() {
 
 function retrieveDisplaySettings() {
   return {
-    'min_distance': getMinDistance(),
-    'max_distance': getMaxDistance(),
-    'max_altitude': maxAltitudeInput.value,
-    'should_fill': shouldFillInput.value,
+    min_distance: getMinDistance(),
+    max_distance: getMaxDistance(),
+    max_altitude: maxAltitudeInput.value,
+    should_fill: shouldFillInput.value,
   }
 }
 
 function sendLoadFileEvent() {
-  dataLayer.push(
-    {
-      'event': 'load_file',
-    }
-  )
+  dataLayer.push({
+    event: "load_file",
+  })
 }
 
 function sendChangeChartSettingsEvent() {
-  dataLayer.push(
-    {
-      'event': 'change_chart_settings',
-      ...retrieveDisplaySettings()
-    }
-  )
+  dataLayer.push({
+    event: "change_chart_settings",
+    ...retrieveDisplaySettings(),
+  })
 }
 
 function sendDownloadImageEvent() {
-  dataLayer.push(
-    {
-      'event': 'download_image',
-      ...retrieveDisplaySettings(),
-      // TODO: ダウンロード設定もretrieveDisplaySettingsっぽくする
-      'width': exportImageWidthInput.value,
-      'height': exportImageHeightInput.value,
-      'split_points': splitPoints,
-    }
-  )
+  dataLayer.push({
+    event: "download_image",
+    ...retrieveDisplaySettings(),
+    // TODO: ダウンロード設定もretrieveDisplaySettingsっぽくする
+    width: exportImageWidthInput.value,
+    height: exportImageHeightInput.value,
+    split_points: splitPoints,
+  })
 }
